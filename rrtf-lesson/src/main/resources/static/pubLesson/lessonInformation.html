@@ -1,0 +1,112 @@
+  <!-- http://localhost:8080/pubLesson/lessonInformation.html?lessonId=63 左下是另一个页面右下是通过按钮和js跳转到的不用我写的页面-->
+  <!doctype html>
+  <html>
+  <head>
+    <meta charset="utf-8">
+    <title>课程详细页</title>
+    <link href="../c/base.css" rel="stylesheet" type="text/css">
+    <link href="../c/toefl.css" rel="stylesheet" type="text/css">
+    <link href="../c/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <script src="../j/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../j/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/publicClass.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+      $(function() {
+        var lessonId = GetQueryString("lessonId");//从地址栏获取id
+        $(".classInfo_main .classInfo_mainL .classInfo_menu").append('<iframe id="classDescIfr" name="classDescIfr" src="lessonShow.html?lessonId='+lessonId+'" style="width: 99vw;height: 84vh;" frameborder="no"></iframe>')
+        $.post("../pubLesson/showLesson?lessonId="+lessonId,
+          function(data) {
+            showLesson(data);
+        });
+        $.post("../lessonData/findData",
+          function(data) {
+            showData(data);
+        });
+
+      })
+      function GetQueryString(name) {//地址栏获取参数
+       var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+       var r = window.location.search.substr(1).match(reg);
+       if(r!=null)return  unescape(r[2]); return null;
+      }
+      function showLesson(d) {
+        $.post("../teacher/showTeacherPicture",
+          {teacherId: d.teacherId},
+          function(data) {
+            var time = new Date(d.date);
+            var y = time.getFullYear();
+            var m = time.getMonth()+1;
+            if(m<10) m="0"+m;
+            var dd = time.getDate();
+            if(d<10) dd="0"+dd;
+            $("body .doc1180").prepend('<div class="crumbs_patch"><a href="newLesson.html">公开课</a>》<a href="newLesson.html">最新公开课</a>》<span>2015年托福英语考试</span></div><div class="classInfo"><dl><dt><a href="###"><img src="../myimage/'+d.lessonPicture+'"></a></dt><dd><div class="classInfo_title">'+d.lessonName+'</div><div class="classInfo_time"><span>课程时间：</span><span>'+y+'-'+m+'-'+dd+'</span><span>'+d.beginTime+'-'+d.endTime+'</span></div><div class="classInfo_name"><div class="classInfo_pic"><img src="'+data+'"></div><div class="classInfo_zjr">主讲人：'+d.teacher+'</div><a href="###" class="openClassZan classInfo_zan">30</a><div class="classInfo_adress"><span>|</span>上课方式：'+d.lessonWay+'</div></div><div class="classInfo_icon"><ul><li><a href="###" class="classInfo_iconWx">微信</a></li><li><a href="###" class="classInfo_iconWb">微博</a></li><li><a href="###" class="classInfo_iconKj">空间</a></li><li><a href="###" class="classInfo_iconQQ">QQ</a></li><li><a href="###" class="classInfo_iconrr">人人</a></li><li><a href="###" class="classInfo_iconxz" data-toggle="modal" data-target=".modal">资料下载</a></li></ul></div><div class="classInfo_text">倒计时：10天18小时56分<span>|</span>已报名人数：'+d.lesStuNum+'</div><div class="fn-clear"><a href="###" class="classInfo_ljbm">立即报名</a><a href="###" class="classInfo_join">加入该活动群</a></div></dd></dl></div>');
+            $(".classInfo_menu.fn-clear>ul").append('<li class="on"><a href="lessonShow.html?lessonId='+d.lessonId+'" target="classDescIfr">课程介绍</a></li><li><a href="../个人资料/教师-明细页.html" target="classDescIfr">教师介绍</a></li>');
+          }
+        )
+        
+      }
+      function showData(d) {//显示供下载的资料
+        var download=$(".flcb_cardDownload ul");
+        for (var i = 0; i < d.length; i++) {
+          var di=d[i];
+          download.append('<li><span class="flcb_cardDownloadZl">资料'+(i+1)+'</span><span class="flcb_cardDownloadBt">'+di.dataName+'</span><a href="###" class="flcb_cardDownloadXz">&nbsp;</a></li>');
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="doc1180 ">
+      <div class="classInfo_main">
+        <div class="classInfo_mainL">
+          <div class="classInfo_menu fn-clear">
+            <ul>
+              <!-- <li class="on"><a href="lessonShow.html" target="classDescIfr" >课程介绍</a></li>
+              <li ><a href="../个人资料/教师-明细页.html" target="classDescIfr" >教师介绍</a></li> -->
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">课程资料</h4>
+            </div>
+            <div class="modal-body">
+              <div class="flcb_cardDownload">
+                <h3 class="flcb_cardDownloadT">2015年1月精品课程下载</h3>
+                <ul>
+                </ul>
+              </div>
+            </div>
+            <div class="modal-footer"><!-- 下载资料用的 -->
+              <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+// 计算页面的实际高度，iframe自适应会用到
+function calcPageHeight(doc) {
+  var cHeight = Math.max(doc.body.clientHeight, doc.documentElement.clientHeight);
+  var sHeight = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
+  var height  = Math.max(doc.body.clientHeight, doc.body.scrollHeight);
+  return height
+}
+var ifr = document.getElementById('classDescIfr');
+ifr.onload = function() {
+  var inter = window.setInterval(function() {
+    var iDoc = ifr.contentDocument || ifr.document
+    var height = calcPageHeight(iDoc)
+    ifr.style.height = height + 'px'
+  },100);
+  window.setTimeout(function() {
+    window.clearInterval(inter);
+  },10000);
+}
+</script>
+
+</body>
+</html>

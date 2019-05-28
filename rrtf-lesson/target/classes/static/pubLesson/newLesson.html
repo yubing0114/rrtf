@@ -1,0 +1,49 @@
+<!-- localhost:8080/pubLesson/newLesson.html-->
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>无标题文档</title>
+		<link href="../c/base.css" rel="stylesheet" type="text/css">
+		<link href="../c/toefl.css" rel="stylesheet" type="text/css">
+		<script type="text/javascript" src="../j/jquery-2.1.0.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				$.post("../pubLesson/showLessons",
+					function(data) {
+						for (var i = 0; i < data.length; i++) {
+							var d=data[i];
+							var time = new Date(d.date);
+							var y = time.getFullYear();
+							var m = time.getMonth()+1;
+							if(m<10) m="0"+m;
+							var dd = time.getDate();
+							if(d<10) dd="0"+dd;
+							//var teacher;
+							$(".open_wrapper.fn-clear").append('<div class="openClass" id="lessonId'+d.lessonId+'""><div class="openClassDate"><span class="openClassD">'+d.uploadTime.substr(8,2)+'日</span><span class="openClassM">'+d.uploadTime.substr(5,2)+'月</span></div><dl class="fn-clear"><dt></dt><dd><h3 class="openClassTitle">'+d.lessonName+'</h3><div class="openClassTime">课程时间：<span>'+y+'-'+m+'-'+dd+' </span>&nbsp;&nbsp;<span>'+d.beginTime+'-'+d.endTime+'</span></div><div class="openClassPic"><a href="lessonInformation.html?lessonId='+d.lessonId+'"><img src="../myimage/'+d.lessonPicture+'" width="720" height="415"></a></div></dd></dl><div class="openClassText"><h3>课程大纲</h3><p>'+d.lessonIntro+'</p></div><div class="openBaoming"><a href="../支付/购买流程-步骤一.html" class="openClassBm">立即报名</a><span>已报名人数：<b>'+d.lesStuNum+'</b></span></div></div>');
+							getTeacher(d.teacherId,d.lessonId);
+						}
+					}
+				)
+			})
+			function getTeacher(teacherId,lessonId) {
+				//alert("teacherId"+teacherId);
+				$.post("../teacher/showTeacherAndPicture?teacherId="+teacherId,
+					function(data) {
+						//console.log(data);
+						var teacher=data.teacher;
+						var picture=data.picture;
+						//头像那里需要改改
+						$("#lessonId"+lessonId+">.fn-clear>dt").replaceWith('<dt><div class="openClassTec"><a href="#"><img src="'+picture+'" width="125" height="125"></a></div><div class="openClassName">主讲人：'+teacher.realname+'</div><a class="openClassZan" href="###">32</a><div class="openClassJieshao">'+teacher.introduce+'</div><div class="openClassMore"><a href="###">了解更多</a></div></dt>');
+					}
+				)
+			}
+		</script>
+	</head>
+	<body>
+		<div class="doc1180">
+			<div class="open_wrapper fn-clear">
+			</div>
+		</div>
+	</body>
+</html>

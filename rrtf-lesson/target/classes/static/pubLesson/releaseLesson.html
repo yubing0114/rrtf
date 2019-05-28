@@ -1,0 +1,147 @@
+<!-- localhost:8080/pubLesson/release.html -->
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>用户中心-上传头像</title>
+		<link href="../c/base.css" rel="stylesheet" type="text/css">
+		<link href="../c/toefl.css" rel="stylesheet" type="text/css">
+		<link href="../c/bootstrap.min.css" rel="stylesheet" type="text/css">
+		<script src="../j/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../j/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/castleCreate.js" type="text/javascript">
+		</script>
+	</head>
+	<body>
+		<div class="doc910 ">
+			<!-- 顶部菜单 -->
+			<div class="flcb_cardMenu">
+				<ul>
+					<li class="on">
+						<a id="basic">基本信息</a>
+					</li>
+					<li >
+						<a id="desc">课程描述</a>
+					</li>
+					<li>
+						<a id="file">课程资料</a>
+					</li>
+				</ul>
+			</div>
+			<!-- 基本信息 -->
+			<div class="userCenter" style="display: block;" id="basicContent">
+				<dl>
+					<dt>课程标题：</dt>
+					<dd><input type="text" class="userCenter_input" value="java课"></dd>
+				</dl>
+				<dl>
+					<dt>上课日期：</dt>
+					<dd><input type="date" class="userCenter_input" value="2019-12-12"></dd>
+				</dl>
+				<dl>
+					<dt>开始时间：</dt>
+					<dd><input type="time" class="userCenter_input" value="2019-12-12"></dd>
+				</dl>
+				<dl>
+					<dt>结束时间：</dt>
+					<dd><input type="time" class="userCenter_input" value="2019-12-12"></dd>
+				</dl>
+				<dl>
+					<dt>适合学员：</dt>
+					<dd><input type="text" class="userCenter_input" value="java课"></dd>
+				</dl>
+				<dl>
+					<dt>课程分类：</dt>
+					<dd>
+						<select class="userCenter_input">
+						</select>
+						
+					</dd>
+				</dl>
+				<dl>
+					<dt></dt>
+					<dd>
+						<a class="userCenter_save" id="save1">保存</a>
+					</dd>
+				</dl>
+			</div>
+			<!-- 课程描述 -->
+			<div class="userCenter" style="display: none;" id="descContent">
+				<dl>
+					<dt>课程讲师：</dt>
+					<dd>
+						<select class="userCenter_input">
+						</select>
+						
+					</dd>
+				</dl>
+				<dl>
+					<dt>课程群：</dt>
+					<dd>
+						<select class="userCenter_input">
+						</select>
+						
+					</dd>
+				</dl>
+				<dl>
+					<dt>宣传图：</dt>
+					<dd>
+						<input type="file" class="userCenter_input">
+					</dd>
+				</dl>
+				<dl>
+					<dt>课程安排：</dt>
+					<dd><textarea cols="" rows="" class="userCenter_t">最近土豪牛大了，昨晚说今天南北车还要板，今天果然又板！</textarea>
+						<p class="userCenter_text">请输入2-100个字符</p>
+					</dd>
+				</dl>
+				<dl>
+					<dt>上课方式：</dt>
+					<dd><textarea cols="" rows="" class="userCenter_t">每周都要在yy上面上课</textarea>
+						<p class="userCenter_text">请输入2-100个字符</p>
+					</dd>
+				</dl>
+				<dl>
+					<dt>听课指南：</dt>
+					<dd><textarea cols="" rows="" class="userCenter_t">每周都要在yy上面上课</textarea>
+						<p class="userCenter_text">请输入2-100个字符</p>
+					</dd>
+				</dl>
+				<dl>
+					<dt></dt>
+					<dd>
+						<a class="userCenter_save" id="save2">保存</a>
+					</dd>
+				</dl>
+			</div>
+			<!-- 课程资料 -->
+			<div class="userTX" style="display: none;" id="fileContent">
+				<div class="flcb_cardDownload">
+		        	<h3 class="flcb_cardDownloadT">2015年1月精品课程下载</h3>
+		            <ul>
+		            </ul>
+					<div class="flcb_cardUpload">
+		            	<a data-toggle="modal" data-target="#uploadModal">上传新资料</a>
+		            </div>
+					<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<h4 class="modal-title" id="myModalLabel">上传新资料</h4>
+								</div>
+								<div class="modal-body">
+									<ul></ul>
+									<input type="file">
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-primary">上传</button>
+								</div>
+							</div>
+						</div>
+					</div>
+		        </div>
+			</div>
+		</div>
+	</body>
+</html>

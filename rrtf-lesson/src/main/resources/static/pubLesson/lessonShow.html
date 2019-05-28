@@ -1,0 +1,61 @@
+<!-- http://localhost:8080/pubLesson/lessonShow.html?lessonId=1 几乎做完了-->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>课程详细页</title>
+<link href="../c/base.css" rel="stylesheet" type="text/css">
+<link href="../c/toefl.css" rel="stylesheet" type="text/css">
+<link href="../c/bootstrap.min.css" rel="stylesheet" type="text/css">
+<script src="../j/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../j/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/publicClass.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+  $(function() {
+    var lessonId=GetQueryString("lessonId");
+    $.post("../pubLesson/showLesson?lessonId="+lessonId,
+      function(data) {
+        showLessonInformation(data);
+    });
+    function showLessonInformation(d) {
+      $("#descContent p:nth-child(2)").append(d.suitStu);
+      $("#descContent p:nth-child(4)").append(d.lessonIntro);
+      var time = new Date(d.date);
+      var y = time.getFullYear();
+      var m = time.getMonth()+1;
+      if(m<10) m="0"+m;
+      var dd = time.getDate();
+      if(d<10) dd="0"+dd;
+      var theDate=y+"年"+m+"月"+dd+"日";
+      $("#descContent p:nth-child(6)").append(theDate+" "+d.beginTime+"-"+d.endTime);
+      $("#descContent p:nth-child(10)").append(d.lessonGuide);
+    }
+  })
+  function GetQueryString(name) {
+   var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+   var r = window.location.search.substr(1).match(reg);
+   if(r!=null)return  unescape(r[2]); return null;
+  }
+</script>
+</head>
+<body>
+<div class="kchgMain" id="descContent">
+       	  	<h4 style="font-size: 20px;height: 35px;line-height: 35px;">适合学员：</h4>
+       	  	<p>
+       	  	</p>
+       	  	<h4 style="font-size: 20px;height: 35px;line-height: 35px;">课程安排：</h4>
+        	<p>
+       	  	</p> 
+       	  	<h4 style="font-size: 20px;height: 35px;line-height: 35px;">课程时间：</h4>
+        	<p>
+       	  	</p> 
+        	<h4 style="font-size: 20px;height: 35px;line-height: 35px;">课程地点：</h4>
+        	<p>
+       	  		YY语音8637频道；网络在线，有电脑/手机就可以参加<br>
+       	  	</p>   
+        	<h4 style="font-size: 20px;height: 35px;line-height: 35px;">听课指南：</h4>
+        	<p>
+       	  	</p>   
+        </div>
+</body>
+</html>
