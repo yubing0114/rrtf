@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 
+//尝试增加一条注释
 @SpringBootApplication
 public class App extends SpringBootServletInitializer {
     public static void main( String[] args )
