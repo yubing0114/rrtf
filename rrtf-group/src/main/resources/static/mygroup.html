@@ -1,0 +1,120 @@
+<!doctype html>
+<!-- <html lang="en" xmlns:th="https://www.thymeleaf.org"> -->
+<<html>
+<head>
+<meta charset="utf-8">
+<link href="../css/base.css" rel="stylesheet" type="text/css">
+<link href="../css/toefl.css" rel="stylesheet" type="text/css">
+<link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<script type="text/javascript"
+	src="http://localhost:8080/js/jquery-3.0.0.min.js"></script>
+<script type="text/javascript" src="../js/grouptype.js"></script>
+<script type="text/javascript"
+	src="http://localhost:8080/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+$(function(){
+	showLessons(0);
+})
+function showLessons(no) {
+	//alert(1);
+	$(".flcb_myGroup>dl").replaceWith('<dl></dl>');
+	$.post("../group/mygroup",
+		{
+			"no": no,
+		},
+		function(data) {
+			//console.log(data);
+			var content=data.content;
+			for (var i = 0; i < data.number; i++) {
+				var d=content[i];
+				console.log(d);
+				//console.log(d.lessonName);
+				$(".flcb_myGroup>dl").append('<dt><a href="#"><img src="../i/82x82.png"></a></dt><dd><div class="flcb_myGroupClass"><h6>'+d.groupName+'<span>'+d.groupType+'</span></h6><div class="flcb_cardNum"><span>'+d.members+'</span>人购买</div><div class="flcb_myGroupTime">群主：<span>'+d.teacher.realname+'</span></div><div class="flcb_myGroupText" th:text="${group.detail}"></div><div class="flcb_cardButton"><a href="chat?id='+d.groupId+'" target="_parent">进群聊天</a> <a href="find2?id='+d.groupId+'"target="_parent">群信息</a> <a href="|delusr?groupId='+d.groupId+'|">退出该群</a></div></div></dd>');
+			}
+			//console.log(data.totalPages+"|"+data.number);
+			showPage(data.totalPages,data.number+1);
+		});
+	}
+//↓添加翻页
+function showPage(totalPage,no) {
+	console.log(totalPage+"|"+no)
+	$(".pageList>ul").replaceWith('<ul></ul>');
+	for (var i = 0; i < totalPage; i++) {
+		//if(i!=no-1)//跳过当前页码,可以不写这行
+		$(".pageList>ul").append('<li><a onclick="showLessons('+(i)+')">'+(i+1)+'</a></li>');
+	}
+	$(".pageList>ul").append('<li><a onclick="showLessons('+(totalPage-1)+')">最后一页</a></li>');
+	if(no!=1) {
+		$(".pageList>ul").append('<li><a class="pret" onclick="showLessons('+(no-2)+')">上一页</a></li>');
+	} else {
+		$(".pageList>ul").append('<li><a class="pret" onclick="showLessons(1)">上一页</a></li>');
+	}
+	if(no!=totalPage) {
+		$(".pageList>ul").append('<li><a class="next" onclick="showLessons('+(no)+')">下一页</a></li>');
+	} else {
+		$(".pageList>ul").append('<li><a class="next" onclick="showLessons('+totalPage+')">下一页</a></li>');
+	}
+}
+</script>
+</head>
+	<body>
+		<div class="doc910 ">
+			<div class="flcb_cardMenu">
+				<ul>
+
+					<li class="on">
+						<a id="myJoin">我加入的群</a>
+					</li>
+				</ul>
+			</div>
+
+		<div id="myJoinContent">
+			<div class="flcb_myGroup">
+				<dl th:each="group:${list}">
+					<dt>
+						<a href="#"><img src="../i/82x82.png"></a>
+					</dt>
+					<dd>
+						<div class="flcb_myGroupClass">
+							<h6 th:text="${group.groupName}">
+								<span th:text="${group.groupType}"></span>
+							</h6>
+							<div class="flcb_cardNum">
+								<span th:text="${group.members}"></span>人购买
+							</div>
+							<div class="flcb_myGroupTime">
+								上课时间：<span>2015-10-29</span><span>12:30--15:30</span>群主：<span
+									th:text="${group.teacher.realname}"></span>
+							</div>
+							<div class="flcb_myGroupText" th:text="${group.detail}"></div>
+							<div class="flcb_cardButton">
+								<a th:href="|chat?id=${group.groupId}&userId=${userId}|"
+									target="_parent">进群聊天</a> <a
+									th:href="|find2?id=${group.groupId}&userId=${userId}|"
+									target="_parent">群信息</a> <a
+									th:href="|delusr?usr=${userId}&groupId=${group.groupId}&userId=${userId}|">退出该群</a>
+							</div>
+						</div>
+					</dd>
+				</dl>
+			</div>
+			<div class="pageList">
+				<ul>
+					<li><a
+						th:each="no:${#numbers.sequence(1,grouplist.totalPages)}"
+						th:href="'localhost:8080/group/mygroup'+'?userId='+${userId}+'&no='+${no-1}"
+						th:text="${no}+' '"></a></li>
+					<li><a
+						th:href="'localhost:8080/group/mygroup'+'?userId='+${userId}+'&no='+${grouplist.totalPages-1}">最后一页</a></li>
+					<li><a th:if="${no!=0}"
+						th:href="'localhost:8080/group/mygroup'+'?userId='+${userId}+'&no='+${no-1}"
+						class="pret">上一页</a></li>
+					<li><a th:if="${no!=grouplist.totalPages-1}"
+						th:href="'localhost:8080/group/mygroup'+'?userId='+${userId}+'&no='+${no+1}"
+						class="next">下一页</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	</body>
+</html>
