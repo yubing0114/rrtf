@@ -36,5 +36,6 @@
 	<modules>
 		<module>rrtf-lesson</module>
     <module>rrtf-atry</module>
+    <module>rrtf-user</module>
   </modules>
 </project>
