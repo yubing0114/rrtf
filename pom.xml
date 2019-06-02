@@ -35,5 +35,6 @@
 	</dependencies>
 	<modules>
 		<module>rrtf-lesson</module>
+    <module>rrtf-atry</module>
   </modules>
 </project>
