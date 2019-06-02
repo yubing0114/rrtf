@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+
+		<meta charset="utf-8">
+		<title>托福人分类页</title>
+		<link href="../c/base.css" rel="stylesheet" type="text/css">
+		<link href="../c/toefl.css" rel="stylesheet" type="text/css">
+		<link href="../c/bootstrap.min.css" rel="stylesheet" type="text/css">
+		<script type="text/javascript" src="../j/jquery-2.1.0.js"></script>
+		<script type="text/javascript" src="../j/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/article.js"></script>
+		<script type="text/javascript">
+
+	
+	
+		$(function(){
+		$(".btn-default").click(function(){
+		var articleId = GetQueryString("articleId");
+		var form = new FormData();
+		var articleTitle = $("#articleTitle").val();
+		var articleType = $("#articleType").val();
+		var myFile = document.getElementById("myFile").files[0];
+		var articleDetail =  $("#articleDetail").val();
+		var form = new FormData();
+		form.append('myFile',myFile);
+        form.append('articleTitle',articleTitle);
+        form.append('articleId',articleId);
+        form.append('articleType',articleType);
+        form.append('articleDetail',articleDetail);
+		console.log(form.get("articleId"));
+
+		$.ajax({ // $.post，告辞
+		    type: 'post',
+		    contentType: false, // 关关关！必须得 false	// 这个不关会扔一个默认值 application/x-www-form-urlencoded 过去，后端拿不到数据的！		                        // 而且你甚至不能传个字符串 'multipart/form-data'，后端一样拿不到数据！
+		    processData: false, // 关关关！重点
+		    url: '/upsave',
+		    data: form,
+		    success: function (response) {
+		       alert("保存成功!")
+		    }
+		});
+		})
+		})
+		
+		
+		function GetQueryString(name) {
+			var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if(r!=null)return  unescape(r[2]); return null;
+		}
+		
+		
+		</script>
+	</head>
+
+	<body>
+
+
+		<div class="container" th:object="${article}">
+
+			<form id="form-edit-article" class="form-horizontal" action="upsave" method="post"  enctype="multipart/form-data">
+				<div class="form-group">
+					<div class="col-sm-10">
+						<label class="fileUploadLabel" for="myFile">添加图片</label>						
+						<input type="file" id="myFile" name="myFile"  style="display: none;"/>
+				
+					</div>
+				</div>
+				<div class="form-group">
+				
+				<p><img th:src="@{i/{filename}(filename=${article.articlePicture})}"width="400px" height="400px"/></p>
+					<label for="inputPassword3" class="col-sm-2 control-label">文章标题</label>
+					<div class="col-sm-10">
+						<input type="text" id="articleTitle" name="articleTitle"  th:field="${article.articleTitle}" class="form-control" placeholder="文章标题">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="inputPassword3" class="col-sm-2 control-label" >文章分类</label>
+					<div class="col-sm-10">
+						<select th:filed="${article.articleType}" th:value="${article.articleType}" class="form-control" id="articleType" name="articleType" lay-verify="required">
+				             <option value="请选择文章类别"></option>
+							<option th:selected="${article.articleType=='听力'}" value="听力">听力</option>
+							<option th:selected="${article.articleType=='口语'}" value="口语">口语</option>
+							<option th:selected="${article.articleType=='写作'}" value="写作">写作</option>
+							<option th:selected="${article.articleType=='阅读'}" value="阅读">阅读</option>
+							<option th:selected="${article.articleType=='资讯'}" value="资讯">资讯</option>
+							<option th:selected="${article.articleType=='机经'}" value="听力">机经</option>
+							<option th:selected="${article.articleType=='词汇'}" value="词汇">词汇</option>
+							<option th:selected="${article.articleType=='活动'}" value="活动">活动</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="inputPassword3" class="col-sm-2 control-label">文章内容</label>
+					<div class="col-sm-10">
+						<textarea  name="articleDetail" type="text" id="articleDetail"  th:field="${article.articleDetail}" rows="20" class="form-control" placeholder="文章标题"></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="button" class="btn btn-default">保存</button>
+					</div>
+				</div>
+			</form>
+		</div>
+
+	</body>
+
+</html>

@@ -51,5 +51,7 @@
     <module>rrtf-group</module>
     <module>rrtf-flcb</module>
       <module>rrtf-eureka-server</module>
-  <module>rrtf-eureka-server2</module></modules>
+  <module>rrtf-eureka-server2</module>
+    <module>rrtf-tuofuren-one</module>
+  </modules>
 </project>

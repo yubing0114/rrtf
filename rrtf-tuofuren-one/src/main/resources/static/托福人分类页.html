@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>托福人分类页</title>
+<link href="../c/base.css" rel="stylesheet" type="text/css">
+<link href="../c/toefl.css" rel="stylesheet" type="text/css">
+<link href="../c/bootstrap.min.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../j/jquery-2.1.0.js"></script>
+<script type="text/javascript" src="../j/bootstrap.min.js"></script>
+<script type="text/javascript" src="../j/lrtk.js"></script>
+<script type="text/javascript">
+$(function(){
+	typebyart(1);
+})
+
+function typebyart(no){
+	var url="/typebyart";
+	var fname="typebyart";
+	$.post(url,
+	     	{		         
+		          "articleType":getUrlParam("articleType"),
+		          "no":no
+			     
+			},
+			function(data){		  
+				var likenum = data.alist;
+				var authorlist = data.blist;
+				var bytlist=data.bytlist;
+				var totalPage=data.bytlist.totalPages;
+				var total=data.bytlist.totalElements;
+				console.log(authorlist);
+			
+			 	show(likenum,totalPage,total,url,no,fname,bytlist,authorlist);
+				}
+		)
+	
+}
+
+
+    function show(likenum,totalPage,total,url,no,fname,bytlist,authorlist){
+    	$(".tfr_classify>dl").empty();
+	for(var i=0;i<bytlist.content.length;i++){
+		var d =bytlist.content[i];
+		var like = likenum[i];
+		var name = authorlist[i];
+		var date = new Date(d.regtime);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+		Y = date.getFullYear() + '-';
+		M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+		D = date.getDate() + ' ';
+		h = date.getHours() + ':';
+		m = date.getMinutes() + ':';
+		s = date.getSeconds();			   
+		$(" .tfr_classify>dl").append('<dl>'+'<a href="../todetail?articleId='+d.articleId+'"'+'target="_parent">'
+				+'<dt>'+' <img class="img-responsive" src="../i/'+d.articlePicture+'">'+'</dt>'+'<dd>'+'<div class="tfr_classifyh3">'+'<h3>'+d.articleTitle+'</h3>'
+				+ '<div>'+'<a href="###" class="imgA">'+'<img class="img" src="../i/125x125.jpg"/>'+'<br>'+name+'</br>'+'</a>'+'</div>'
+				+'</div>'+'<div class="tfr_classifyText">'+d.articleDetail+'</div>'
+                +'<div class="tfr_classifyTime">'
+				+'<span>所属分类:</span>'+'<a href="###">'+d.articleType+'</a>'+'<span>发布日期：</span>'+'<span>'+Y+M+D+h+m+s+'</span>'
+                +'<div class="commDiv">'+'<span class="glyphicon glyphicon-heart" style="color: #D92A11;">'+'</span>'
+                +'<span>'+like+'</span>'+'<span class="glyphicon glyphicon-user" style="color: #388BFF;">'+'</span>'+'<span>'+20+'</span>'
+                +'</div>'+ '</div>'+'</dd>'+'</a>'+'</dl>'
+		);
+	}
+	showPage(url,totalPage,no,fname);
+}
+
+
+
+    function showPage(url,totalPage,no,fname){
+	$(" .pageList").replaceWith('<div class="pageList"><ul></ul></div>'); 
+		for(var i=0;i<totalPage;i++){
+			if(no==i+1)
+				$(" .pageList ul").append('<li><a style="font-weight:bold;color:red;" onclick='+fname+'('+(i+1)+')>'+(i+1)+'</a></li>');
+			else
+				$(" .pageList ul").append('<li><a onclick='+fname+'('+(i+1)+')>'+(i+1)+'</a></li>');
+		}
+		$(" .pageList ul").append('<li><a onclick='+fname+'('+totalPage+')>最后一页</a></li>');
+		if(no!=1){
+			$(" .pageList ul").append('<li><a class="pret" onclick='+fname+'('+(no-1)+')>上一页</a></li>');
+		}
+		if(no!=totalPage){
+			$(" .pageList ul").append('<li><a class="next" onclick='+fname+'('+(no+1)+')>下一页</a></li>');
+		}
+	}
+	
+	
+
+
+function getUrlParam(key) {
+    // 获取参数
+    var url = window.location.search;
+    var reg = new RegExp("(^|&)" + key + "=([^&]*)(&|$)");
+    var result = url.substr(1).match(reg);
+    return result ? decodeURIComponent(result[2]) : null;
+}
+
+</script>
+</head>
+
+<body>
+<div class="menu">
+	<div class="doc1180">
+   	  <div class="menuLink">
+        	<ul class="fn-clear">
+            	<li class="active"><a href="main.html" target="ifr">首页</a></li>
+                <li><a href="top6" target="ifr">托福人</a></li>
+                <li><a href="##" target="ifr">公开课</a></li>
+                <li><a href="##" target="ifr">群组聊</a></li>
+                <li><a href="##" target="ifr">福利城堡</a></li>
+            </ul>
+        </div>
+        <div class="fenxiang">
+        	<a href="#" class="weibo"><img src="i/weibo.png" ></a>
+            <a href="#" class="weixin"><img src="i/weixin.png" ></a>
+        </div>
+    </div>
+</div>
+
+
+
+	<!--页面左侧内容-->
+    <div class="tfr_left">
+    	<div class="tfr_classify">
+     	<dl>  </dl>  </div>
+        <div class="pageList">
+        	<ul>
+            </ul>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

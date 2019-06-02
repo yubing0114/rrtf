@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>托福人分类页</title>
+<link href="../c/base.css" rel="stylesheet" type="text/css">
+<link href="../c/toefl.css" rel="stylesheet" type="text/css">
+<link href="../c/bootstrap.min.css" rel="stylesheet" type="text/css">
+<script src="../j/jquery-2.1.0.js" type="text/javascript"
+	charset="utf-8"></script>
+<script type="text/javascript" src="../j/lrtk.js"></script>
+<script type="text/javascript">
+// 计算页面的实际高度，iframe自适应会用到
+
+
+
+	$(function(){
+	var articleId=GetQueryString("articleId");
+		var userId=$('#userId').val();
+		$.post("/likeready?articleId="+articleId,
+			function(data) {
+				if(data=='1')
+					
+					$(".glyphicon-heart").attr("style","float: right;right: 50px;font-size: 30px;color: black;");
+				else
+					$(".glyphicon-heart").attr("style","float: right;right: 50px;font-size: 30px;color: red;");
+				 
+			})
+		conlist(1);
+		pageview();
+		$(".like").click(function(e) {
+			var articleId=GetQueryString("articleId");
+			var userId=$('#userId').val();
+			$.post("/like?articleId="+articleId,
+					function(data) {
+						console.log(data);
+						console.log(data.articleId);
+						if(data=='0'){
+							$(".glyphicon-heart").attr("style","float: right;right: 50px;font-size: 30px;color: black;");
+							alert("取消收藏");
+						}
+						else{
+							$(".glyphicon-heart").attr("style","float: right;right: 50px;font-size: 30px;color: red;");
+							alert("收藏成功!");
+						}
+					
+					})
+		});
+		$(".pinglunbutton").click(function(e) {
+			//alert(1);
+			var articleId=GetQueryString("articleId");
+			//var userId=$('#userId').val();
+			var ccontent = $(".tfr_DetailsInput").val();
+			//alert(articleId+ccontent);
+			$.post("/comment?articleId="+articleId,
+				{"ccontent": ccontent},
+				function(data){
+		        	$(".tfr_DetailsMessage>ul").append(ccontent);
+		        	alert("评论成功!")
+				})
+			})
+	
+	})
+					
+	function showPage(idname,url,totalPage,no,fname){
+		$(".pageList").replaceWith('<div class="pageList"><ul></ul></div>');
+		for(var i=0;i<totalPage;i++){
+			$(".pageList ul").append('<li><a onclick='+fname+'('+(i+1)+')>'+(i+1)+'</a></li>');
+		}
+		$(" .pageList ul").append('<li><a onclick='+fname+'('+totalPage+')>最后一页</a></li>');
+		if(no!=1){
+			$(idname+" .pageList ul").append('<li><a class="pret" onclick='+fname+'('+(no-1)+')>上一页</a></li>');
+		}else{
+			$(" .pageList ul").append('<li><a class="pret" onclick='+fname+'(1)>上一页</a></li>');
+			
+		}
+		if(no!=totalPage){
+			$(" .pageList ul").append('<li><a class="next" onclick='+fname+'('+(no+1)+')>下一页</a></li>');
+		}else{
+			$(" .pageList ul").append('<li><a class="next" onclick='+fname+'('+totalPage+')>下一页</a></li>');
+		}
+	}
+	
+	function show(idname,colist,totalPage,total,url,no,fname,userlist){
+		$(idname+".tfr_DetailsMessage").replaceWith(' <div class="tfr_DetailsMessage" id="dll"></div>');
+		for(var i=0;i<colist.content.length;i++){
+			var d =colist.content[i];
+			var j = colist.totalElements-colist.number*colist.size-i+' '+'楼';
+			var user = userlist[i];
+			var date = new Date(d.ctime);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+			Y = date.getFullYear() + '-';
+			M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+			D = date.getDate() + ' ';
+			h = date.getHours() + ':';
+			m = date.getMinutes() + ':';
+			s = date.getSeconds();			   
+			$(".tfr_DetailsMessage").append('<ul>'+'<li>'+'<div class="tfr_DetailsMPic">'+'<img src="../i/125x125.jpg">'
+				+'<div class="tfr_DetailsMPicB">'+'</div>'
+				+'</div>'
+				+'<div class="tfr_DetailsMText">'
+				+'<div class="tfr_DetailsMTitle">'+d.ccontent+'</div>'
+				+'<div class="tfr_DetailsName">'+'<span>'+user+'</span>'+Y+M+D+h+m+s+'</div>'
+				+'</div>'
+				+' <div class="tfr_DetailsLc">'+j+'</ul>'+'</li>'
+			);
+		}
+		showPage(idname,url,totalPage,no,fname);
+	}
+	    
+	function conlist(no) {
+		var url="/conlist";
+		var fname="conlist";
+		$.post(url,
+			{
+				"articleId": GetQueryString("articleId"),
+				"no":no
+			},
+			function(data) {
+				console.log(data);
+				var userlist=data.listname;
+				var idname="#dll";
+				var totalPage=data.colist.totalPages
+				var colist=data.colist;
+				var total=data.colist.totalElements;
+				show(idname,colist,totalPage,total,url,no,fname,userlist);
+			}
+		)
+	}
+	
+	  function pageview(){
+		  var url="/pageview";
+		  $.post(url,
+		  {
+			  "articleId": GetQueryString("articleId"), 
+		  },
+		  function(data){
+			  console.log(data);
+		  }
+		  
+		  )
+		  
+	  }
+	
+	
+	
+	//从地址栏获取参数
+	function GetQueryString(name) {
+		var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if(r!=null)return  unescape(r[2]); return null;
+	}
+</script>
+</head>
+
+<body>
+   
+
+
+   
+	<input type="hidden" id="userId" name="userId" value="${user.userId}" />
+
+	<div class="doc1180 paddingT20 fn-clear" th:object="${article}">
+		<!--页面左侧内容-->
+		<div class="tfr_left">
+			<div class="tfr_Details">
+				<div class="tfr_DetailsPic">
+					<img class="img-responsive"
+						th:src="@{i/{filename}(filename=${article.articlePicture})}" />
+				</div>
+				<div class="tfr_DetailsTitle">
+					<p th:text="${article.articleTitle}"></p>
+				</div>
+				<div class="tfr_DetailsTime">
+					发布于：<span>22：00</span><span th:text="${article.regtime}"></span>
+				</div>
+				<div class="tfr_DetailsTime">
+					发布人：<a href="#" th:text="${realname}"></a>
+				</div>
+				<div class="tfr_DetailsFx"></div>
+				<div class=" tfr_DetailsMain">
+					<p th:text="${article.articleDetail}"></p>
+				</div>
+
+				<div class="tfr_DetailsPl">
+					<div class="tfr_DetailsPlTop">
+
+						<span>文章评论: <b th:text="${aid}"></b></span>
+						<li><a class="like"><span
+								class="glyphicon glyphicon-heart"
+								style="float: right; right: 50px; font-size: 30px; color: red;"></span></a></li>
+					</div>
+					<div class="tfr_DetailsSr">
+						<textarea name="ccontent" cols="5" rows="5"
+							class="tfr_DetailsInput"></textarea>
+					</div>
+
+					<div class="tfr_DetailsTj">
+						<dl>
+							<dt>
+
+								<a class="tfr_DetailsTjLink">登录</a>后参与评论
+							</dt>
+							<dd>
+								<button type="submit" name="pinglun"
+									class="btn btn-default pinglunbutton">提交</button>
+							</dd>
+						</dl>
+
+					</div>
+
+
+					<div class="tfr_DetailsMessage" id="dll">
+						<ul>
+							
+						</ul>
+					</div>
+
+					<div class="pageList">
+						<ul>
+	
+						</ul>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--页面左侧内容 end-->
+	<!--页面右侧内容-->
+	<div class="doc280 fn-right">
+		<!--今日上线-->
+		<div class="index_itemR">
+			<div class="tfr_jrsx">
+				<h3>今日上线</h3>
+				<span>+12</span>
+			</div>
+			<div class="index_homework">
+				<dl>
+					<dt>
+						<i class="index_homeworkIcon"><img
+							src="../i/index_homeworkIcon_1.png" width="20" height="20"></i><a
+							href="#" class="index_homeworkTitle">听力</a>
+					</dt>
+					<dd>
+						<a href="#">控制字数控制显示的字数控制字数控制显示的字数控制字数控制显示的字数</a>
+					</dd>
+				</dl>
+				<dl>
+					<dt>
+						<i class="index_homeworkIcon"><img
+							src="../i/index_homeworkIcon_2.png" width="20" height="20"></i><a
+							href="#" class="index_homeworkTitle">听力</a>
+					</dt>
+					<dd>
+						<a href="#">控制字数控制显示的字数控制字数控制显示的字数控制字数控制显示的字数</a>
+					</dd>
+				</dl>
+				<dl>
+					<dt>
+						<i class="index_homeworkIcon"><img
+							src="../i/index_homeworkIcon_3.png" width="20" height="20"></i><a
+							href="#" class="index_homeworkTitle">听力</a>
+					</dt>
+					<dd>
+						<a href="#">控制字数控制显示的字数控制字数控制显示的字数控制字数控制显示的字数</a>
+					</dd>
+				</dl>
+				<dl>
+					<dt>
+						<i class="index_homeworkIcon"><img
+							src="../i/index_homeworkIcon_4.png" width="20" height="20"></i><a
+							href="#" class="index_homeworkTitle">听力</a>
+					</dt>
+					<dd>
+						<a href="#">控制字数控制显示的字数控制字数控制显示的字数控制字数控制显示的字数</a>
+					</dd>
+				</dl>
+
+			</div>
+		</div>
+		<!--热门小组-->
+		<div class="index_itemR">
+			<div class="index_itemRtitle">
+				<h3>热门小组</h3>
+				<a href="###" class="index_itemRMore">换一换</a>
+			</div>
+			<div class="index_itemRHot">
+				<dl>
+					<dt>
+						<a href="###"><img src="../i/48x48.png" width="48" height="48"></a>
+					</dt>
+					<dd>
+						<div class="fn-clear">
+							<span class="index_itemRHotName">标题请控制字数</span> <span
+								class="index_itemRHotPic"><img
+								src="../i/index_itemRHot.png"></span> <span
+								class="index_itemRHotNum">234567人加入</span>
+						</div>
+						<div class="index_itemRHotText">简介请控制字数</div>
+					</dd>
+				</dl>
+				<dl>
+					<dt>
+						<a href="###"><img src="../i/48x48.png" width="48" height="48"></a>
+					</dt>
+					<dd>
+						<div class="fn-clear">
+							<span class="index_itemRHotName">你不做作就不会死</span> <span
+								class="index_itemRHotPic"><img
+								src="../i/index_itemRHot.png"></span> <span
+								class="index_itemRHotNum">234567人加入</span>
+						</div>
+						<div class="index_itemRHotText">你不做作就不会死你不做作就不会死你不做作就不会死</div>
+					</dd>
+				</dl>
+				<dl>
+					<dt>
+						<a href="###"><img src="../i/48x48.png" width="48" height="48"></a>
+					</dt>
+					<dd>
+						<div class="fn-clear">
+							<span class="index_itemRHotName">你不做作就不会死</span> <span
+								class="index_itemRHotPic"><img
+								src="../i/index_itemRHot.png"></span> <span
+								class="index_itemRHotNum">234567人加入</span>
+						</div>
+						<div class="index_itemRHotText">你不做作就不会死你不做作就不会死你不做作就不会死</div>
+					</dd>
+				</dl>
+			</div>
+
+		</div>
+		<!--名师推荐-->
+		<div class="index_itemR">
+			<div class="index_itemRtitle">
+				<h3>名师推荐</h3>
+				<a href="###" class="index_itemRMore">更多</a>
+			</div>
+			<div class="tfr_mstj">
+				<dl>
+					<dt>
+						<a href="###"><img src="../i/tfr_mstj.png"></a>
+					</dt>
+					<dd>
+						<h3 class="tfr_mstjH3">教师名字</h3>
+						<a href="###">60分以下考生作业: 盛会杰老师 于2015-01-15日发作业</a>
+					</dd>
+				</dl>
+				<dl>
+					<dt>
+						<a href="###"><img src="../i/tfr_mstj.png"></a>
+					</dt>
+					<dd>
+						<h3 class="tfr_mstjH3">教师名字</h3>
+						<a href="###">60分以下考生作业: 盛会杰老师 于2015-01-15日发作业</a>
+					</dd>
+				</dl>
+				<dl>
+					<dt>
+						<a href="###"><img src="../i/tfr_mstj.png"></a>
+					</dt>
+					<dd>
+						<h3 class="tfr_mstjH3">教师名字</h3>
+						<a href="###">60分以下考生作业: 盛会杰老师 于2015-01-15日发作业</a>
+					</dd>
+				</dl>
+			</div>
+		</div>
+
+
+	</div>
+	<!--页面右侧内容 end-->
+
+	</div>
+
+</body>
+</html>
