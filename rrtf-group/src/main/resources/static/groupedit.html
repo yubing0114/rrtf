@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>组群聊-群聊页</title>
+<link href="../css/base.css" rel="stylesheet" type="text/css">
+<link href="../css/toefl.css" rel="stylesheet" type="text/css">
+<link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../js/grouptype.js"></script>
+<script type="text/javascript"
+	src="http://localhost:8080/js/jquery-3.0.0.min.js"></script>
+<script type="text/javascript"
+	src="http://localhost:8080/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+	$.ajaxSettings.traditional = true;
+	function getChecked() {
+		var check = $(".useridlist");
+		console.log(check);
+		var array = new Array();
+		var n = 0;
+		for (var i = 0; i < check.length; i++){
+			if(check[i].checked) {
+				array[n++] = $(check[i]).val();
+			}
+		}
+		console.log(array);
+		return array;
+	}
+	$(function(){
+		$(".btn-success").click(function(){
+			//http://localhost:8080/group/find1?userId=1&groupId=1
+			/* console.log($("#groupId").val()+":"+
+			$("#groupName").val()+":"+
+			$("#detail").val()+":"+
+			$("#rule").val()); */
+			$.post("../../group/update",
+					{
+						"groupId":$("#groupId").val(),
+						"groupName":$("#groupName").val(),
+						"detail":$("#detail").val(),
+						"rule":$("#rule").val()
+					});
+			window.location.reload(); 
+		})
+		$("#buttons").click(function(){
+			$.post("../../group/updateuser",
+					{
+						"useridlist":getChecked(),
+						"groupId":$("#groupId").val()
+					}/* ,function(){
+						var x=document.getElementById("useridlist")
+						  x.remove().parent().parent()
+					} */
+					)
+					window.location.reload(); 
+		})
+	})
+</script>
+</head>
+
+<body>
+	<div class="doc1180 fn-clear">
+		<div class="crumbs_patch">
+			<a th:href="|findid?id=${entity.groupType.typeId}&no=0&userId=1|"
+				th:text="${entity.groupType.typeName}"></a>》 
+			<a th:text="${entity.groupName}"></a>》
+			<span>群聊</span>
+		</div>
+		<form action="update" method="post">
+			<div class="qzl_CyTop">
+				<div class="qzl_CyInfo">
+					<ul>
+						<input th:value="${entity.groupId}" name="groupId" hidden="true" id="groupId"/>
+						<li class="qzl_CyInfoLeft"><div class="qzl_CyInfoPic">
+								<img src="../i/82x82.png">
+							</div></li>
+						<li class="qzl_CyInfoMid">
+							<div class="qzl_CyInfoMain">
+								<input type="text" th:value="${entity.groupName}"
+									name="groupName" class="form-control"
+									style="width: 300px; height: 50px;" id="groupName">
+								<div class="qzl_CyInfoTime"
+									th:text="'建群时间：'+${entity.buildTime}"></div>
+								<div>
+									<b th:text="${entity.members}"></b>人已加入此群
+								</div>
+							</div>
+						</li>
+						<li class="qzl_CyInfoRight"><a class="qzl_CyInfoBut">群头像</a></li>
+					</ul>
+					<dl class="qzl_CyInfoDl">
+						<dt>群介绍</dt>
+						<textarea class="form-control" name="detail" id="detail"
+							style="width: 600px; height: 200px;" th:text="${entity.detail}"></textarea>
+					</dl>
+					<dl class="qzl_CyInfoDl">
+						<dt>群规则</dt>
+						<textarea class="form-control" name="rule" id="rule"
+							style="width: 600px; height: 200px;" th:text="${entity.rule}"></textarea>
+					</dl>
+					<div>
+						<button type="button" class="btn btn-success">保存</button>
+					</div>
+				</div>
+		</form>
+	</div>
+	<form action="|updateuser?id=entity.groupId|" method="post">
+		<div class="qzl_CyTeam">
+			<div class="qzl_CyTeamTitle">
+				<h3>群成员</h3>
+			</div>
+			<div class="qzl_CyTeamBody">
+				<ul class="qzl_CyTeam1200" name="userlist">
+					<li th:each="user:${userList}">
+						<div class="qzl_CyTeamPic">
+							<img src="../i/60x60.png">
+						</div>
+						<div class="qzl_CyTeamName">
+							<span th:text="${user.userName}"></span> <input type="checkbox"
+								th:value="${user.userId}" class="useridlist"></input>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div  style="width: 200px; float: right;">
+				<button id="buttons" type="button" class="btn btn-danger">删除</button>
+			</div>
+		</div>
+	</form>
+
+</body>
+</html>

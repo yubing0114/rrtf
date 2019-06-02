@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>群聊页</title>
+<link href="../css/base.css" rel="stylesheet" type="text/css">
+<link href="../css/toefl.css" rel="stylesheet" type="text/css">
+<link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<script type="text/javascript"
+	src="http://localhost:8080/js/jquery-3.0.0.min.js"></script>
+<script type="text/javascript" src="../js/grouptype.js"></script>
+<script type="text/javascript"
+	src="http://localhost:8080/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+	<div class="doc1180 fn-clear">
+		<div class="crumbs_patch">
+			<a th:href="|findid?id=${entity.groupType.typeId}&no=0&userId=${userId}|" th:text="${entity.groupType.typeName}"></a>》 <a th:href="|find2?id=${entity.groupId}&userId=${userId}|" th:text="${entity.groupName}"></a>》 <span>群聊</span>
+		</div>
+		<!--页面左侧内容-->
+		<div class="tfr_left">
+			<div class="zql_Top">
+				<ul>
+					<li class="zql_TopPic"><img src="../i/82x82.png" width="82"
+						height="82"></li>
+					<li class="zql_TopText">
+						<div class="zql_TopTitle" th:text="${entity.groupName}"></div>
+						<div class="qzl_CyInfoTime" th:text="'建群时间：'+${#dates.format(entity.buildTime,'yyyy-MM-dd HH:mm:ss')}"></div>
+                        <div><b class="bule" th:text="${entity.members}"></b>人已加入此群</div>
+					</li>
+					<li class="zql_TopButton"><a class="btn btn-primary"
+						th:href="|find2?id=${entity.groupId}&userId=${userId}|">查看群组详情</a></li>
+				</ul>
+			</div>
+			<div class="zql_Body">
+				
+			</div>
+			<div class="zql_Bottom">
+				<!-- <div>
+					<input  type="text" class="zql_BottomTitle">
+				</div> -->
+				<div>
+					<textarea name="" cols="" rows="" class="zql_BottomInput" id="text"></textarea>
+				</div>
+				<div class="paddingT20 fn-clear">
+					<button onclick="send()" type="button" class="btn btn-default">发布</button>
+				</div>
+			</div>
+		</div>
+		<!--页面左侧内容 end-->
+		<!--页面右侧内容-->
+		<div class="doc280 fn-right">
+			<div class="index_itemR">
+				<div class="index_itemRtitle">
+					<h3>本群成员</h3>
+				</div>
+				<div class="zql_chengyuan">
+					<ul>
+						<li th:each="member:${memberlist}"><img src="../i/60x60.png" width="60" height="60"></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!--页面右侧内容 end-->
+
+	</div>
+
+</body>
+<button onclick="conectWebSocket()">连接WebSocket</button>
+<button onclick="closeWebSocket()">断开连接</button>
+<!-- 消息：<input id="text" type="text" /> -->
+<!-- <button onclick="send()">发送消息</button> -->
+<div id="message"></div>
+<script type="text/javascript">
+    var websocket = null;
+	var mydate=new Date();
+	var date=mydate.getFullYear()+'-'+mydate.getMonth()+'-'+mydate.getDate();
+    function conectWebSocket(){
+        //判断当前浏览器是否支持WebSocket
+        if ('WebSocket'in window) {
+            websocket = new WebSocket("ws://localhost:8080/websocket");
+        } else {
+            alert('Not support websocket')
+        }
+        //连接发生错误的回调方法
+        websocket.onerror = function() {
+            setMessageInnerHTML("error");
+        };
+        /* //连接成功建立的回调方法
+        websocket.onopen = function(event) {
+            setMessageInnerHTML("Loc MSG: 成功建立连接");
+        } */
+        //接收到消息的回调方法
+        websocket.onmessage = function(event) {
+            setMessageInnerHTML(event.data);
+        }
+        /* //连接关闭的回调方法
+        websocket.onclose = function() {
+            setMessageInnerHTML("Loc MSG:关闭连接");
+        } */
+        //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+        window.onbeforeunload = function() {
+            websocket.close();
+        }
+    }
+    //将消息显示在网页上
+    function setMessageInnerHTML(innerHTML) {
+        //document.getElementById('message').innerHTML += innerHTML + '<br/>';
+		$(".zql_Body").append('<dl><dt class="zql_BodyPic"><img src="../i/82x82.png"></dt><dd class="zql_BodyText"><div class="zql_BodyTitle"><span></span><div style="float: right;"><a onclick="delchat(this)" class="btn btn-danger">删除</a></div></div><div class="zql_BodyT"><p>'+innerHTML+'</p></div><div style="width: 170px; float: right;"><span>创建日期：'+date+'</span></div></dd></dl>');
+    }
+	//
+	function delchat(t) {
+		$(t).parent().parent().parent().parent().parent().remove();
+	}
+    //关闭连接
+    function closeWebSocket() {
+        websocket.close();
+    }
+    //发送消息
+    function send() {
+        var message = document.getElementById('text').value;
+        websocket.send(message);
+    }
+</script>
+</html>

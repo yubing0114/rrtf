@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>组群聊-组群聊</title>
+<link href="../css/base.css" rel="stylesheet" type="text/css">
+<link href="../css/toefl.css" rel="stylesheet" type="text/css">
+<link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<script type="text/javascript"
+	src="http://localhost:8080/js/jquery-3.0.0.min.js"></script>
+<script type="text/javascript" src="../js/grouptype.js"></script>
+<script type="text/javascript"
+	src="http://localhost:8080/js/bootstrap.min.js"></script>
+<!-- <script type="text/javascript">
+	$(function(){
+		/* $.post("../group/findid",{"id":0,"no":0}
+				); */
+		//function showPage(id,url,totalPage,no,fname) {
+		//alert(2);
+		$(".pageList").replaceWith('<div class="pageList"><ul></ul></div>');
+		for (var i = 0; i < totalPage; i++) {
+			//var onclick='onclick=myLesson('+(i+1)+')';
+			//var a='onclick="alert(1)"';
+			//console.log(onclick);
+			//if(i!=no-1)//跳过当前页码,可以不写这行
+			$(id+" .pageList ul").append('<li><a onclick='+fname+'('+(i+1)+')>'+(i+1)+'</a></li>');
+		}
+		$(id+" .pageList ul").append('<li><a onclick='+fname+'('+totalPage+')>最后一页</a></li>');
+		if(no!=1) {
+			$(id+" .pageList ul").append('<li><a class="pret" onclick='+fname+'('+(no-1)+')>上一页</a></li>');
+		} else {
+			$(id+" .pageList ul").append('<li><a class="pret" onclick='+fname+'(1)>上一页</a></li>');
+		}
+		if(no!=totalPage) {
+			$(id+" .pageList ul").append('<li><a class="next" onclick='+fname+'('+(no+1)+')>下一页</a></li>');
+		} else {
+			$(id+" .pageList ul").append('<li><a class="next" onclick='+fname+'('+totalPage+')>下一页</a></li>');
+		}
+		//}
+	})
+</script> -->
+</head>
+
+<body>
+
+	<div class="openMenu">
+		<div class="doc1180">
+			<ul class="fn-clear">
+				<li class="openMenuOn"><a th:href="|findid?id=0&no=0|"
+					>全部</a></li>
+				<li class="openMenuOn" th:each="type:${grouptypelist}"><a th:href="|findid?id=${type.typeId}&no=0|"
+					th:text="${type.typeName}"></a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="doc1180 paddingT20 fn-clear">
+		<!--页面左侧内容-->
+		<div class="tfr_left">
+			<div class="zql_itemWyjq">
+				<button class="itemWyjqB btn btn-danger" data-toggle="modal"
+					data-target="#myModal">我要建群</button>
+				<!-- 模态框（Modal） -->
+				<div class="modal fade
+				" id="myModal" tabindex="-1" role="dialog"
+					aria-labelledby="myModalLabel" aria-hidden="true">
+					<div class="modal-dialog" style="width: 400px">
+						<div class="modal-content" style="height: 600px">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal"
+									aria-hidden="true">&times;</button>
+								<h4 class="modal-title" id="exampleModalLabel">我要建群</h4>
+							</div>
+							<div class="alert">
+								<div class="col-sm-6">
+									<form action="add" method="post">
+										<div class="form-group">
+											<select name="typeId" id="typeId">
+												<option th:each="type:${grouptypelist}" th:value="${type.typeId}" th:text="${type.typeName}"/>
+											</select>
+										</div>
+										<div class="form-group">
+											<select name="teacherId" id="teacherId">
+												<option th:each="teacher:${teacherlist}" th:value="${teacher.teacherId}" th:text="${teacher.realname}"/>
+											</select>
+										</div>
+										<div class="form-group">
+											<input type="text" name="groupName" placeholder="群组名称" id="groupName">
+										</div>
+										<div class="form-group">
+											<input type="text" name="detail" placeholder="群简介" id="detail">
+										</div>
+										<div class="form-group">
+											<input type="text" name="rule" placeholder="输入群规则" id="rule">
+										</div>
+										<div class="modal-footer">
+											<button id="buttons" type="submit" class="btn btn-primary">申请建群</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="zql_item" th:if="${grouplist!=null}">
+				<ul th:each="group:${grouplist}">
+					<li class="zql_itemPic"><img src="../i/82x82.png" width="82"
+						height="82"></li>
+					<li class="zql_itemText">
+
+						<div class="zql_itemTitle" th:text="${group.groupName}"></div>
+						<div class="zql_itemTime" th:text="'建群时间'+${#dates.format(group.buildTime,'yyyy-MM-dd HH:mm:ss')}"></div>
+
+					</li>
+					<li class="zql_itemButton">
+						<div class="zql_itemNum" th:text="${group.members}+'人已加入'"></div>
+						<div class="zql_itemZt" th:if="${group.status!=0}">
+							<a th:href="|find2?id=${group.groupId}&userId=${userId}|">群信息</a>|<a
+								th:href="|delusr?groupId=${group.groupId}|">退出该群</a>
+						</div>
+						<a class="btn btn-success" th:if="${group.status!=0}" th:href="|chat?id=${group.groupId}&userId=${userId}|">聊天室</a>
+						<a class="btn btn-primary" th:if="${group.status==0}" th:href="|addinto?groupId=${group.groupId}|">加入群</a>
+					</li>
+				</ul>
+			</div>
+			<div class="pageList" th:if="${grouplist!=null}">
+				<ul>
+					<li><a th:each="no:${#numbers.sequence(1,grouplist.totalPages)}" th:if="${no}!=0" th:href="'/group/findid?id='+${id}+'&no='+${no-1}" th:text="${no}+' '"></a></li>
+					<li><a th:if="${no!=0}" th:href="'/group/findid?id='+${id}+'&no='+${grouplist.totalPages-1}">最后一页</a></li>
+					<li><a th:if="${no!=0}" th:href="'/group/findid?id='+${id}+'&no='+${no-1}" class="pret">上一页</a></li>
+					<li><a th:if="${no!=grouplist.totalPages-1&amp;&amp;grouplist.totalPages!=0}" th:href="'/group/findid?id='+${id}+'&no='+${no+1}" class="next">下一页</a></li>
+				</ul>
+			</div>
+		</div>
+		<!--页面左侧内容 end-->
+		<!--页面右侧内容-->
+	</div>
+</body>
+</html>

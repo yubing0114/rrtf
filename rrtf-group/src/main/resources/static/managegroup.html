@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<title>系统管理-群组列表</title>
+<link href="../css/base.css" rel="stylesheet" type="text/css">
+<link href="../css/toefl.css" rel="stylesheet" type="text/css">
+<link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../js/jquery-2.1.0.js"></script>
+<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../js/lrtk.js"></script>
+<script type="text/javascript">
+	$.ajaxSettings.traditional = true;
+	var no=0,groupName="",buildTime="";
+	function chk() {
+		var all = document.getElementById("all");
+		var mychk = document.getElementsByName("grouplist");
+		if (all.checked == true) {
+			if (mychk.length) {
+				for (var i = 0; i < mychk.length; i++) {
+					mychk[i].checked = true;
+				}
+
+			}
+			mychk.chcked = true;
+		} else {
+			if (mychk.length) {
+				for (var i = 0; i < mychk.length; i++) {
+					mychk[i].checked = false;
+				}
+
+			}
+		}
+
+	}
+	function getChecked() {
+		var check = $(".grouplist");
+		console.log(check);
+		var array = new Array();
+		var n = 0;
+		for (var i = 0; i < check.length; i++){
+			if(check[i].checked) {
+				array[n++] = $(check[i]).val();
+			}
+		}
+		return array;
+	}
+	$(function(){
+		showLessons(0,"","");
+		$("#buttons").click(function(){
+			$.post("../../group/delgroup",
+					{
+						"grouplist":getChecked(),
+					}) 
+		});
+		$(".form-inline>button").click(function() {//搜索
+			groupName=$("#groupName").val()||"";
+			buildTime=$("#date").val()||"";
+			showLessons(no,groupName,buildTime);
+			//return false;
+		});
+		
+	})
+	function showLessons(no,groupName,buildTime) {
+	$(".myPost_Theme>table").replaceWith('<table width="100%" border="0" cellspacing="0" cellpadding="0" class="myPost_Table"><tr class="myPost_Th"><th><input id="all" type="checkbox" name="yon"onclick="chk()" /></th><th>群组名称</th><th>描述</th><th>创建时间</th><th>创建人</th><th>群组人数</th></tr>');
+	$.post("../group/managegroup",
+		{
+			"groupName": groupName,
+			"date": buildTime,
+			"no": no,
+		},
+		function(data) {
+			var content=data.content;
+			for (var i = 0; i < content.length; i++) {
+				var d=content[i];
+				var mytime=new Date(d.buildTime);
+				//console.log(d);
+				//console.log(d.lessonName);
+				$(".myPost_Theme>table").append('<tr><td><input type="checkbox" name="grouplist" class="checkbox" id="" value="'+d.groupId+'" /></td><td>'+d.groupName+'</td><td>'+d.detail+'</td><td>'+mytime.toLocaleString()+'</td><td>'+d.groupMaster+'</td><td>'+d.members+'</td></tr>');
+			}
+			//console.log(data.totalPages+"|"+data.number);
+			showPage(data.totalPages,data.number+1);
+		});
+	}
+		//↓添加翻页
+		function showPage(totalPage,no) {
+			console.log(totalPage+"|"+no)
+			$(".pageList>ul").replaceWith('<ul></ul>');
+			for (var i = 0; i < totalPage; i++) {
+				//if(i!=no-1)//跳过当前页码,可以不写这行
+				$(".pageList>ul").append('<li><a onclick="showLessons('+(i)+',groupName,buildTime)">'+(i+1)+'</a></li>');
+			}
+			$(".pageList>ul").append('<li><a onclick="showLessons('+(totalPage-1)+',groupName,buildTime)">最后一页</a></li>');
+			if(no!=1) {
+				$(".pageList>ul").append('<li><a class="pret" onclick="showLessons('+(no-2)+',groupName,buildTime)">上一页</a></li>');
+			} else {
+				$(".pageList>ul").append('<li><a class="pret" onclick="showLessons(1,groupName,buildTime)">上一页</a></li>');
+			}
+			if(no!=totalPage) {
+				$(".pageList>ul").append('<li><a class="next" onclick="showLessons('+(no)+',groupName,buildTime)">下一页</a></li>');
+			} else {
+				$(".pageList>ul").append('<li><a class="next" onclick="showLessons('+totalPage+',groupName,buildTime)">下一页</a></li>');
+			}
+		}
+</script>
+</head>
+
+<body>
+
+	<div class="doc1180 paddingT20 fn-clear container">
+		<div>
+			<form class="form-inline" action="form-inline">
+				<div class="form-group">
+					<label for="exampleInputName2">群名称</label> <input type="text"
+						class="form-control" id="groupName" name="groupName"
+						placeholder="Jane Doe">
+				</div>
+				<div class="form-group">
+					<label for="exampleInputEmail2">创建日期</label> <input type="date"
+						class="form-control" id="date" name="date">
+				</div>
+				<input th:value="0" name="no" hidden="true" id="no" name="no" />
+				<button type="button" class="btn btn-primary">搜索</button>
+			</form>
+
+		</div>
+		<form action="/group/delgroup">
+			<div class="myPost_Theme" style="height: 80vh; margin-top: 50px;">
+				<table width="100%" border="0" cellspacing="0" cellpadding="0"
+					class="myPost_Table">
+					<tr class="myPost_Th">
+						<th><input id="all" type="checkbox" name="yon"
+							onclick="chk()" /></th>
+						<th>群组名称</th>
+						<th>描述</th>
+						<th>创建日期</th>
+						<th>创建人</th>
+						<th>群组人数</th>
+					</tr>
+					<!-- <tr th:each="group:${grouplist}">
+						<td><input type="checkbox" name="grouplist" id="grouplist"
+							class="grouplist" th:value="${group.groupId}"/></td>
+						<td th:text="${group.groupName}"></td>
+						<td th:text="${group.detail}"></td>
+						<td th:text="${#dates.format(group.buildTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+						<td th:text="${group.groupMaster}"></td>
+						<td th:text="${group.members}"></td>
+					</tr> -->
+				</table>
+				<div class="pageList" style="width: 500px; float: right;">
+					<ul></ul>
+					<!-- <ul th:if="${groupName}==null"
+						th:with="h=${#httpServletRequest.getRequestURL()}">
+						<li><a
+							th:each="no:${#numbers.sequence(1,grouplist.totalPages)}"
+							th:href="${h}+'?no='+${no-1}" th:text="${no}"></a></li>
+						<li><a th:href="${h}+'?no='+${grouplist.totalPages-1}">最后一页</a></li>
+						<li><a th:if="${no!=0}" th:href="${h}+'?no='+${no-1}"
+							class="pret">上一页</a></li>
+						<li><a th:if="${no!=grouplist.totalPages-1}"
+							th:href="${h}+'?no='+${no+1}" class="next">下一页</a></li>
+					</ul>
+					<ul th:if="${groupName}!=null"
+						th:with="h=${#httpServletRequest.getRequestURL()}+'?groupName='+${groupName}+'&date='+${date}">
+						<li><a
+							th:each="no:${#numbers.sequence(1,grouplist.totalPages)}"
+							th:href="${h}+'&no='+${no-1}" th:text="${no}+' '"></a></li>
+						<li><a th:href="${h}+'&no='+${grouplist.totalPages-1}">最后一页</a></li>
+						<li><a th:if="${no!=0}" th:href="${h}+'&no='+${no-1}"
+							class="pret">上一页</a></li>
+						<li><a th:if="${no!=grouplist.totalPages-1}"
+							th:href="${h}+'&no='+${no+1}" class="next">下一页</a></li>
+					</ul> -->
+				</div>
+				<div style="margin-top: 40px; width: 400px; float: left;">
+					<button id="buttons" type="submit" class="btn btn-danger">删除</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+
+</body>
+
+</html>
