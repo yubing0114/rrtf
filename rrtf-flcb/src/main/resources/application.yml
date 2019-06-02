@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: rrtf-flcb
+  datasource:
+    url: jdbc:mysql://192.168.1.12:3306/rrtf?useUnicode=true&characterEncoding=utf8&useSSL=true
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: root
+  jpa:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: mysql
+    show-sql: true
+    format_sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        strategy: org.hibernate.cfg.DefaultComponentSafeNamingStrategy
+  thymeleaf:
+    prefix: classpath:/static/
+    suffix: .html
+    mode: LEGACYHTML5
+    encoding: UTF-8
+    content-type: text/html
+    cache: false
+  http:
+    multipart:
+      enabled: true
+      file-size-threshold: 0
+      location: F:/temp/
+      max-file-size: 10MB
+      max-request-size: 10MB
+  redis:
+    database: 0
+    host: 192.168.1.20
+    post: 6379
+    password:
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: -1
+upload:
+  location: static\tuoFuTest\img\
+server:
+  port: 8091
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.1.23:8001/eureka
+
+  

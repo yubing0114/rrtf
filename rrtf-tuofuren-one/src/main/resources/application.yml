@@ -1,0 +1,57 @@
+server:
+  port: 8012
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.1.23:8001/eureka/
+spring:
+    application: 
+        name: rrtf-tuofuren
+    thymeleaf:
+      prefix: classpath:/static/
+      suffix: .html
+      mode: LEGACYHTML5
+      encoding: UTF-8
+      content-type: text/html
+      cache: false
+    datasource:
+      url: jdbc:mysql://127.0.0.1:3306/rrtf?zeroDateTimeBehavior=convertToNull
+      drive-class-name: com.mysql.jdbc.Driver
+      username: root
+      password: root
+    redis:
+       database: 0
+       host: 192.168.1.12
+       post: 6379
+       password: 
+       lettuce:
+         pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1
+    jpa:
+      properties:
+        hibernate:
+          hbm2ddl:
+              auto: update
+          dialect: org.hibernate.dialect.MySQL5Dialect
+          format_sql: true
+      show-sql: true
+ 
+    http:
+      multipart:
+        enabled: true
+        file-size-threshold: 0
+        location: D:/temp/
+        max-file-size: 1MB
+        max-request-size: 10MB
+upload:
+  location: D:/eclipse-workspace/spring-cloud/rrtf/src/main/resources/static/i
+ 
+
+
+
+        
+
+

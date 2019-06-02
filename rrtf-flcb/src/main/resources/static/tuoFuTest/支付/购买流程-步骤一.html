@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>购买流程-步骤一</title>
+<link href="/tuoFuTest/c/base.css" rel="stylesheet" type="text/css">
+<link href="/tuoFuTest/c/toefl.css" rel="stylesheet" type="text/css">
+<script src="/tuoFuTest/j/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="/tuoFuTest/支付/payOne.js"></script>
+</head>
+
+<body>
+
+<div class="doc1180">
+  <div class="process">
+   	<div class="processTop">
+        	<ul>
+            	<li class="on">填写联系人并确认商品信息</li>
+                <li ><a href="###" id="pay2">填写并核对订单信息</a></li>
+                <li><a href="购买流程-步骤三.html">购买完成</a></li>
+            </ul>
+        </div>
+    <div class="processTitle">请务必确认联系人信息</div>
+        <div class="processForm">
+        	<input type="text" class="processInput" value="姓名" id="name">
+            <input type="text" class="processInput" value="电话" id="tel">
+           <input type="hidden" th:value="${flcb.lessonId}" id="lessonId"></input>
+	</div>
+        <div class="processTable">
+        	<table border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td>课程</td>
+                <td>数量</td>
+                <td>单价</td>
+                <td>总价</td>
+              </tr>
+              <tr>
+                <td class="processKc">
+                <div class="processPic"><img th:src="${flcb.lessonPicture}"></div>
+                <div class="processText" th:text="${flcb.lessonTitle}">1月托福热血口语强化班</div>
+                </td>
+                <td>1</td>
+                <td th:text="${flcb.lessonPrice}+'元'">799元</td>
+                <td th:text="${flcb.lessonPrice}+'元'">799元</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td colspan="3" class="processPay">
+                	<div>共  1  门课程 ，应付金额：<span th:text="${flcb.lessonPrice}" id="money">799元</span><span>元</span></div>
+                  <div>使用<input type="text" class="processRPB" id="rpb">RPB，抵扣：<span id="rmb"></span></div>
+                    <div class="f_12">（可用RPB2000，本次最高可用1000）</div>
+                </td>
+              </tr>
+            </table>
+            <div class="processYf">应付金额：<span id="realPay"></span>元</div>
+        </div>
+  </div>
+</div>
+
+</body>
+</html>

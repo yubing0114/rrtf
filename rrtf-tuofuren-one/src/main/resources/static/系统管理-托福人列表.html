@@ -1,0 +1,403 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>系统管理-讲师列表</title>
+		<link href="../c/base.css" rel="stylesheet" type="text/css">
+		<link href="../c/toefl.css" rel="stylesheet" type="text/css">
+		<link href="../c/bootstrap.min.css" rel="stylesheet" type="text/css">
+		<script type="text/javascript" src="../j/jquery-2.1.0.js"></script>
+		<script type="text/javascript" src="../j/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../j/lrtk.js"></script>
+	
+		<script type="text/javascript">
+		$.ajaxSettings.traditional = true;
+		
+		allart(1);
+		
+		 $(function(){
+				$(".btn-primary").click(function(){
+					if($("input[name='check']:checked").val()!=null){					
+					var usera = showCol();	 	
+					if(confirm("确定将此文章恢复可读状态吗")){
+						alert("恢复成功");						
+					$.post(
+						"/update",
+						{'ids': usera,
+						 'status': 0
+						},
+						function(data) {
+						console.log(data);
+						}
+					);
+					return true;
+					}
+					return false;
+					}else{
+						alert("请先至少选中一项!")
+					}
+				})  
+			 })
+			 
+			 
+			  $(function(){
+				$(".btn-success").click(function(){
+					if($("input[name='check']:checked").val()!=null){
+						var usera = showCol();			
+					if(confirm("确定将此文章变为禁读状态吗")){
+						alert("禁读成功");
+
+					$.post(
+						"/update",
+						{'ids': usera,
+						 'status': 1
+						},
+						function(data) {
+						console.log(data);
+						}
+					);
+					return true;
+					}
+					return false;	
+					}else{
+						alert("请先至少选中一项!")
+					}
+				})  
+			 })
+
+
+		 $(function(){
+			$(".btn-danger").click(function(){
+				if($("input[name='check']:checked").val()!=null){	
+					var user = showCol();			
+				if(confirm("确定删除吗")){
+					alert("删除成功");
+					
+					$.post(
+						"/delete",
+						{'ids': user},
+						function(data) {
+						console.log(data);
+						}
+					);
+					return true;
+				}
+				return false;	
+				}else{
+					alert("请先至少选中一项!")
+				}
+			})  
+		 })
+			 
+			
+			function showCol(){	
+			var check=$("input[name='check']:checked");//选中的复选框	
+			 var array = new Array();
+			 var n  = 0;
+			 for (var i = 0; i < check.length; i++){
+				 if(check[i].checked==true) {
+						array[n++] = check.eq(i).parent().siblings('td.a').text();
+					}
+				/* array(n++)=row.find("[name='a']").html();//注意html()和val()		 */		
+
+			 }
+			 return array;
+			}
+
+
+	
+		function showPage(idname,url,totalPage,no,fname){
+			$(" .pageList").replaceWith('<div class="pageList"><ul></ul></div>');
+			for(var i=0;i<totalPage;i++){
+				if(no==i+1)
+					$(" .pageList ul").append('<li><a style="font-weight:bold;color:red;" onclick='+fname+'('+(i+1)+')>'+(i+1)+'</a></li>');
+				else
+					$(" .pageList ul").append('<li><a onclick='+fname+'('+(i+1)+')>'+(i+1)+'</a></li>');
+			}
+			$(" .pageList ul").append('<li><a onclick='+fname+'('+totalPage+')>最后一页</a></li>');
+			if(no!=1){
+				$(" .pageList ul").append('<li><a class="pret" onclick='+fname+'('+(no-1)+')>上一页</a></li>');
+			}
+			if(no!=totalPage){
+				$(" .pageList ul").append('<li><a class="next" onclick='+fname+'('+(no+1)+')>下一页</a></li>');
+			}
+		}
+		
+		
+		
+		
+		function showPagea(idname,url,totalPage,no,fname,articleType){
+			$(" .pageList").replaceWith('<div class="pageList"><ul></ul></div>');
+			for(var i=0;i<totalPage;i++){
+				if(no==i+1)
+					$(" .pageList ul").append('<li><a style="font-weight:bold;color:red;" onclick='+fname+'('+(i+1)+','+'&apos;'+articleType+'&apos;'+')>'+(i+1)+'</a></li>');
+				else
+					$(" .pageList ul").append('<li><a onclick='+fname+'('+(i+1)+','+'&apos;'+articleType+'&apos;'+')>'+(i+1)+'</a></li>');
+			}
+			$(" .pageList ul").append('<li><a onclick='+fname+'('+totalPage+','+'&apos;'+articleType+'&apos;'+')>最后一页</a></li>');
+			if(no!=1){
+				$(" .pageList ul").append('<li><a class="pret" onclick='+fname+'('+(no-1)+','+'&apos;'+articleType+'&apos;'+')>上一页</a></li>');
+			}
+			if(no!=totalPage){
+				$(" .pageList ul").append('<li><a class="next" onclick='+fname+'('+(no+1)+','+'&apos;'+articleType+'&apos;'+')>下一页</a></li>');
+			
+			}
+			}
+		
+		
+	
+		function bytit(no) {
+			 var url="/bytit";		
+	         var realname = $("#realname").val();
+	         var articleType = $("#type").val();
+	         var articleTitle = $("#exampleInputName2").val();
+	         var fname="bytit";
+	         var idname="#search";
+	         $.post(url,
+	     			{
+	     				"no":no,
+	     				"articleType":articleType,
+	     				"articleTitle":articleTitle,
+	     				"realname":realname
+	     			},
+	     			function(data){
+	     				console.log(data.alist);
+	     				//alert(1);
+	     				var likenum = data.alist;
+	     				var totalPage=data.list.totalPages
+	    				var list=data.list;
+	    				var total=data.list.totalElements;
+	    				showSearch(list,totalPage,total,url,realname,no,fname,idname,likenum)
+	     			}
+			)
+		}
+		
+		function showSearch(list,totalPage,total,url,realname,no,fname,idname,likenum){
+			$("#search>tbody").empty();
+			for(var i=0;i<list.content.length;i++){
+				var total = likenum[i];
+				var d =list.content[i];
+				var date = new Date(d.regtime);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+				Y = date.getFullYear() + '-';
+				M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+				D = date.getDate() + ' ';
+				h = date.getHours() + ':';
+				m = date.getMinutes() + ':';
+				s = date.getSeconds();
+				var stu;
+				if(d.status==0) {
+					stu = "正常";
+				}else{
+					stu = "冷冻";
+
+				}
+				console.log(d);
+				$("#search>tbody").append(
+						'<tr>'+
+					    '<td>'+'<input type="checkbox" name="check" id="check" value="check" />'+
+					    '</td>'+
+						'<td name="a" class="a">'+d.articleId+'</td>'+'<a style="color: red;"href="../个人资料/普通用户-首页.html">'+'<td>'+d.articleTitle+'</a>'+
+	 	                 '</td>'+'<td>'+d.articleType+'</td>'+'<td>'+realname+'</td>'+'<td>'+Y+M+D+h+m+s+'</td>'+'<td>'+total+'</td>'+'<td>'+d.pageview+'</td>'+'<td name="status" class="status">'+stu+'</td>'+'</tr>'	
+				);
+			}
+			showPage(idname,url,totalPage,no,fname);
+		}
+		
+		function showtype(list,totalPage,total,url,userlist,no,fname,idname,articleType,likenum){
+			$("#search>tbody").empty();
+			for(var i=0;i<list.content.length;i++){
+				var d =list.content[i];
+				var like = likenum[i];
+				var user = userlist[i];
+				var date = new Date(d.regtime);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+				Y = date.getFullYear() + '-';
+				M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+				D = date.getDate() + ' ';
+				h = date.getHours() + ':';
+				m = date.getMinutes() + ':';
+				s = date.getSeconds();
+				var stu;
+				if(d.status==0) {
+					stu = "正常";
+				}else{
+					stu = "冷冻";
+
+				}
+				console.log(d);
+				$("#search>tbody").append(
+					'<tr>'+
+				    '<td>'+'<input type="checkbox" name="check" id="check" value="check" />'+
+				    '</td>'+
+					'<td name="a" class="a">'+d.articleId+'</td>'+'<a style="color: red;"href="../个人资料/普通用户-首页.html">'+'<td>'+d.articleTitle+'</a>'+
+ 	                 '</td>'+'<td>'+d.articleType+'</td>'+'<td>'+user+'</td>'+'<td>'+Y+M+D+h+m+s+'</td>'+'<td>'+like+'</td>'+'<td>'+d.pageview+'</td>'+'<td>'+stu+'</td>'+'</tr>'	
+				);
+				
+			}
+			showPagea(idname,url,totalPage,no,fname,articleType);
+		}
+
+		function byType(no,articleType){
+			console.log(articleType);
+			var url = "/byType";
+			var fname = "byType";
+		    var idname="#search";
+			alert(articleType);
+			$.post(url,
+					{
+						"articleType": articleType,
+						"no":no
+					},
+					function(data) {
+						var likenum = data.alist;
+						console.log(likenum);
+						var totalPage=data.typelist.totalPages
+	    				var list=data.typelist;
+	    				var total=data.typelist.totalElements;
+	    				var userlist = data.namelist;
+	    				console.log(data);
+	    				showtype(list,totalPage,total,url,userlist,no,fname,idname,articleType,likenum)
+					}
+				
+			)
+		}
+		
+
+		
+		function showall(list,totalPage,total,url,userlist,no,fname,idname){
+			$("#search>tbody").empty();
+			for(var i=0;i<list.content.length;i++){
+				var d =list.content[i];
+				var user = userlist[i];
+				var date = new Date(d.regtime);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+				Y = date.getFullYear() + '-';
+				M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+				D = date.getDate() + ' ';
+				h = date.getHours() + ':';
+				m = date.getMinutes() + ':';
+				s = date.getSeconds();
+				var stu;
+				if(d.status==0) {
+					stu = "正常";
+				}else{
+					stu = "冷冻";
+
+				}
+				console.log(d);
+				$("#search>tbody").append(
+				'<tr>'+
+			      '<td>'+'<input type="checkbox" name="check" id="check" value="check" />'+
+			    '</td>'+
+				'<td name="a" class="a">'+d.articleId+'</td>'+'<a style="color: red;"href="../个人资料/普通用户-首页.html">'+'<td>'+d.articleTitle+'</a>'+
+	 	           '</td>'+'<td>'+d.articleType+'</td>'+'<td>'+user+'</td>'+'<td>'+Y+M+D+h+m+s+'</td>'+'<td>'+200+'</td>'+'<td>'+d.pageview+'</td>'+'<td>'+stu+'</td>'+'</tr>'	
+				);
+			}
+			showPage(idname,url,totalPage,no,fname);
+		}
+		
+		
+		function allart(no){
+			var url="/allart";
+			var fname="allart";
+			var idname="#search";
+			$.post(url+"/"+no,
+					function(data){
+						var totalPage=data.allist.totalPages
+	    				var list=data.allist;
+	    				var total=data.allist.totalElements;
+	    				var userlist = data.namelist;
+	    				console.log(data);
+	    				showall(list,totalPage,total,url,userlist,no,fname,idname)
+					}
+			)
+		}
+
+ </script>
+		
+	</head>
+
+	<body>
+		<div class="openMenu">
+			<div class="doc1180">
+		    	<ul class="fn-clear" style="padding-left:220px;">
+		        	<li class="openMenuOn"><a href="#" onclick="allart(1)">全部</a></li>
+		            <li><a onclick="byType(1,'听力')">听力</a></li>
+		            <li><a onclick="byType(1,'写作')">写作</a></li>
+		            <li><a onclick="byType(1,'资讯')">咨询</a></li>
+		            <li><a onclick="byType(1,'口语')">口语</a></li>
+		            <li><a onclick="byType(1,'阅读')">阅读</a></li>
+		            <li><a onclick="byType(1,'活动')">活动</a></li>
+		            <li><a onclick="byType(1,'词汇')">词汇</a></li>
+		            <li><a onclick="byType(1,'机经')">机经</a></li>
+		        </ul>
+		    </div>
+		</div>
+		<div class="doc1180 paddingT20 fn-clear container">
+			<div>
+				<form class="form-inline">
+					<div class="form-group">
+						<label for="exampleInputName2">标题</label>
+						<input type="text" class="form-control exampleInputName2" id="exampleInputName2"  placeholder="文章标题名">
+					</div>
+					<div class="form-group">
+						<label for="exampleInputEmail2">发布讲师</label>
+						<select class="form-control" id="realname">
+							<option>1</option>
+							<option>是造成至少</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="exampleInputEmail2">课程类别</label>
+						<select class="form-control" id="type">
+							<option>听力</option>
+							<option>写作</option>
+							<option>阅读</option>
+							<option>词汇</option>
+							<option>机经</option>
+							<option>资讯</option>
+							<option>活动</option>
+							<option>口语</option>
+						</select>
+					</div>
+					
+					<button type="button" class="btn btn-info" onclick="bytit(1)">搜索</button>
+				</form>
+
+			</div>
+			<div class="myPost_Theme" style="height: 80vh;margin-top: 50px;">
+				<table width="100%" border="0" cellspacing="0" cellpadding="0" class="myPost_Table" id="search">
+					<thead>
+						<tr class="myPost_Th">
+							<th> <input type="checkbox" name="select" id="select" value="select" /></th>
+							<th>文章ID</th>
+							<th>文章标题</th>
+							<th>文章类别</th>
+							<th>发布讲师</th>
+							<th>发布时间</th>
+							<th>收藏人数</th>
+							<th>阅读数量</th>
+							<th>文章状态</th>
+						</tr>					
+					</thead>
+					<tbody>
+					</tbody>
+					
+				</table>
+
+				<div class="pageList" style="width: 500px;float: right;">
+					<ul>
+					</ul>
+				</div>
+
+				<div id="" class="" style="margin-top: 40px;width: 400px; float: left;">
+					<a href="#" class="btn btn-success" >禁读</a>
+					<a href="#" class="btn btn-primary" >解禁</a>
+					<a href="#" class="btn btn-danger">删除</a>
+				</div>
+			</div>
+
+		</div>
+
+		
+	</body>
+
+</html>

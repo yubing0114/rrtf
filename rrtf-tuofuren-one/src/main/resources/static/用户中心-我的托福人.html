@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<title>我的托福人</title>
+<link href="../c/base.css" rel="stylesheet" type="text/css">
+<link href="../c/toefl.css" rel="stylesheet" type="text/css">
+<link href="../c/bootstrap.min.css" rel="stylesheet" type="text/css">
+<script src="../j/jquery-2.1.0.js" type="text/javascript"
+	charset="utf-8"></script>
+<script src="js/publicClass.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+$(function(){
+	$("#newclassContent").css("display","block");
+	
+
+	descmypub(1);
+})
+  	
+ 		function deletemyart(articleId){
+		  var url = "/deletemyart"
+		  if(confirm("确定删除此篇文章吗")){
+						alert("删除成功!");
+   		     $.post(url,
+						{
+					     "articleId": articleId
+						},
+						function(data) {
+							console.log(data);
+						}
+						);
+   			return true;
+			}
+			return false;
+           } 
+
+	function showPage(idname,url,totalPage,no,fname){
+		$(idname+" .pageList").replaceWith('<div class="pageList"><ul></ul></div>');
+		for(var i=0;i<totalPage;i++){
+			if(no==i+1)
+				$(idname+" .pageList ul").append('<li><a style="font-weight:bold;color:red;" onclick='+fname+'('+(i+1)+')>'+(i+1)+'</a></li>');
+			else
+				$(idname+" .pageList ul").append('<li><a onclick='+fname+'('+(i+1)+')>'+(i+1)+'</a></li>');
+		}
+		$(idname+" .pageList ul").append('<li><a onclick='+fname+'('+totalPage+')>最后一页</a></li>');
+		if(no!=1){
+			$(idname+" .pageList ul").append('<li><a class="pret" onclick='+fname+'('+(no-1)+')>上一页</a></li>');
+		}
+		if(no!=totalPage){
+			$(idname+" .pageList ul").append('<li><a class="next" onclick='+fname+'('+(no+1)+')>下一页</a></li>');
+		}
+	}
+	
+	function show(idname,artlist,totalPage,total,url,no,fname,list,likenum){
+		$(idname+" .publiclass").replaceWith(' <div class="publiclass"></div>');
+		for(var i=0;i<artlist.content.length;i++){
+			var d =artlist.content[i];
+			var like = likenum[i];
+			var user = list[i];
+			console.log(user);
+			var date = new Date(d.regtime);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+			Y = date.getFullYear() + '-';
+			M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+			D = date.getDate() + ' ';
+			h = date.getHours() + ':';
+			m = date.getMinutes() + ':';
+			s = date.getSeconds();			   
+			$(idname+" .publiclass").append('<dl>'+'<a href="../todetail?articleId='+d.articleId+'"'+'target="_parent">'
+					+'<dt>'+' <img class="img-responsive" src="../i/'+d.articlePicture+'">'+'</dt>'+'<dd>'+'<div class="tfr_classifyh3">'+'<h3>'+d.articleTitle+'</h3>'
+					+ '<div>'+'<a href="###" class="imgA">'+'<img class="img" src="../i/125x125.jpg"/>'+user+'</a>'+'</div>'
+					+'</div>'+'<div class="tfr_classifyText">'+d.articleDetail+'</div>'
+                    +'<div class="tfr_classifyTime">'
+					+'<span>所属分类:</span>'+'<a href="###">'+d.articleType+'</a>'+'&nbsp'+'&nbsp'+'<span>发布日期：</span>'+'<span>'+Y+M+D+h+m+s+'</span>'
+	                +'<div class="commDiv">'+'<span class="glyphicon glyphicon-heart" style="color: #D92A11;">'+'</span>'
+	                +'<span>'+like+'</span>'+'&nbsp'+'&nbsp'+'<span class="glyphicon glyphicon-user" style="color: #388BFF;">'+'</span>'+'<span>'+3+'</span>'
+                    +'</div>'+ '</div>'+'</dd>'+'</a>'+'</dl>'
+			);
+		}
+		showPage(idname,url,totalPage,no,fname);
+	}
+	    
+	function likearticle(no) {
+		var url="/likearticle";
+		var userId=$('#userId').val();
+		var fname="likearticle";
+		$.post(url,
+			{
+				"no":no
+			},
+			function(data) {
+				console.log(data);
+				var likenum = data.alist;
+				var list=data.namelist;
+				var idname="#myclassContent";
+				var totalPage=data.artlist.totalPages
+				var artlist=data.artlist;
+				var total=data.artlist.totalElements;
+				show(idname,artlist,totalPage,total,url,no,fname,list,likenum);
+			}
+		)
+	}
+	
+	
+	
+	function showmy(idname,mylist,totalPage,total,url,no,fname,name,likenum){
+		$(idname+" .publiclass").replaceWith(' <div class="publiclass"></div>');
+		for(var i=0;i<mylist.content.length;i++){
+			var d =mylist.content[i];
+			var like = likenum[i];
+			var name = name;
+			var date = new Date(d.regtime);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+			Y = date.getFullYear() + '-';
+			M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+			D = date.getDate() + ' ';
+			h = date.getHours() + ':';
+			m = date.getMinutes() + ':';
+			s = date.getSeconds();			   
+			$(idname+" .publiclass").append('<dl>'+'<a href="../todetail?articleId='+d.articleId+'"'+'target="_parent">'
+					+'<dt>'+' <img class="img-responsive" src="../i/'+d.articlePicture+'">'+'</dt>'+'<dd>'+'<div class="tfr_classifyh3">'+'<h3>'+d.articleTitle+'</h3>'
+					+ '<div>'+'<a href="###" class="imgA">'+'<img class="img" src="../i/125x125.jpg"/>'+name+'</a>'+'</div>'
+					+'</div>'+'<div class="tfr_classifyText">'+d.articleDetail+'</div>'
+                    +'<div class="tfr_classifyTime">'
+					+'<span>所属分类:</span>'+'<a href="###">'+d.articleType+'</a>'+'&nbsp'+'&nbsp'+'<span>发布日期：</span>'+'<span>'+Y+M+D+h+m+s+'</span>'+'<a href="../updatemyart?articleId='+d.articleId+'"'+'style="margin-left: 40px;">'
+					+'编辑'+'&nbsp'+'&nbsp'+'</a>'+'<a href="#"  onclick=\"deletemyart('+d.articleId+')\" class="remove">'+'删除'+'</a>'
+	                +'<div class="commDiv">'+'<span class="glyphicon glyphicon-heart" style="color: #D92A11;">'+'</span>'
+	                +'<span>'+like+'&nbsp'+'&nbsp'+'</span>'+'<span class="glyphicon glyphicon-user" style="color: #388BFF;">'+'</span>'+'<span>'+20+'</span>'
+                    +'</div>'+ '</div>'+'</dd>'+'</a>'+'</dl>'
+			);
+		
+        	
+
+		}
+		showPage(idname,url,totalPage,no,fname);
+	}
+	    
+	
+
+	
+	
+	
+	
+    function searchMypub(no) {
+		var url="/searchMypub";
+		var userId=$('#userId').val();
+		var fname="searchMypub";
+		$.post(url,
+	     	{
+			      "no":no
+			},
+				function(data){
+				var idname="#descContent";
+				var likenum = data.alist;
+				var name = data.realname;
+				var mylist=data.mylist;
+				var totalPage=data.mylist.totalPages
+				var total=data.mylist.totalElements;
+				console.log(data);
+				showmy(idname,mylist,totalPage,total,url,no,fname,name,likenum);
+				}
+		)
+		
+	}
+	    
+	    
+	    
+	function showmynew(idname,mydesclist,totalPage,total,url,no,fname,name,likenum){
+		
+		//debugger;
+		$(idname+" .publiclass").replaceWith(' <div class="publiclass"></div>');
+		for(var i=0;i<mydesclist.content.length;i++){
+			var d =mydesclist.content[i];
+			var like = likenum[i];
+			var name = name;
+			var date = new Date(d.regtime);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+			Y = date.getFullYear() + '-';
+			M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+			D = date.getDate() + ' ';
+			h = date.getHours() + ':';
+			m = date.getMinutes() + ':';
+			s = date.getSeconds();			   
+			$(idname+" .publiclass").append('<dl>'+'<a href="../todetail?articleId='+d.articleId+'"'+'target="_parent">'
+					+'<dt>'+' <img class="img-responsive" src="../i/'+d.articlePicture+'">'+'</dt>'+'<dd>'+'<div class="tfr_classifyh3">'+'<h3>'+d.articleTitle+'</h3>'
+					+ '<div>'+'<a href="###" class="imgA">'+'<img class="img" src="../i/125x125.jpg"/>'+name+'</a>'+'</div>'
+					+'</div>'+'<div class="tfr_classifyText">'+d.articleDetail+'</div>'
+                    +'<div class="tfr_classifyTime">'
+					+'<span>所属分类:</span>'+'<a href="###">'+d.articleType+'</a>'+'&nbsp'+'&nbsp'+'<span>发布日期：</span>'+'<span>'+Y+M+D+h+m+s+'</span>'+'<a href="../updatemyart?articleId='+d.articleId+'"'+'style="margin-left: 40px;">'
+					+'编辑'+'&nbsp'+'&nbsp'+'</a>'+'<a href="#"  onclick=\"deletemyart('+d.articleId+')\" class="remove">'+'删除'+'</a>'
+	                +'<div class="commDiv">'+'<span class="glyphicon glyphicon-heart" style="color: #D92A11;">'+'</span>'
+	                +'<span>'+like+'&nbsp'+'&nbsp'+'</span>'+'<span class="glyphicon glyphicon-user" style="color: #388BFF;">'+'</span>'+'<span>'+20+'</span>'
+                    +'</div>'+ '</div>'+'</dd>'+'</a>'+'</dl>'
+			);
+		}
+		showPage(idname,url,totalPage,no,fname);
+	}
+    function descmypub(no){
+    	var url="/descmypub";
+		var userId=$('#userId').val();
+		var fname="descmypub";
+		$.post(url,
+		     	{
+				      "no":no
+				},
+				function(data){
+					var idname="#newclassContent";
+					var likenum = data.alist;
+					var name = data.realname;
+					var mydesclist=data.mydesclist;
+					var totalPage=data.mydesclist.totalPages
+					var total=data.mydesclist.totalElements;
+					console.log(data);
+					showmynew(idname,mydesclist,totalPage,total,url,no,fname,name,likenum);
+					}
+			)
+    	
+    }
+	//从地址栏获取参数
+	function GetQueryString(name) {
+		var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if(r!=null)return  unescape(r[2]); return null;
+	}
+
+
+</script>
+</head>
+
+
+
+
+<body>
+   <input type="hidden" id="userId" name="userId" value="${user.userId}" />
+	<div class="doc1180 paddingT20 fn-clear">
+		<div class="
+		flcb_cardMenu" style="position: relative;">
+			<ul>
+				<li class="on"><a onclick="descmypub(1)" id="newclass">最近发布文章</a></li>
+				<li><a  onclick="searchMypub(1)" id="desc">我发布的文章</a></li>
+				<li><a onclick="likearticle(1)" id="myclass">我关注的文章</a></li>
+			</ul>
+			<div style="position: absolute; right: 10px;">
+				<button type="button" class="btn btn-success "
+					onclick="window.location.href='../托福人发布页.html'">
+					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+					发布
+				</button>
+			</div>
+
+		</div>
+		<div id="descContent" style="display: none;">
+			<div class="publiclass">
+		</div>
+			<div class="pageList">
+				<ul>
+				</ul>
+			</div>
+
+		</div>
+
+
+				
+	<div id="newclassContent" style="display: none;">
+				<div class="publiclass">
+				</div>
+					<div class="pageList">
+     <ul>
+					</ul>
+				</div>
+
+			</div>
+			<div id="myclassContent" style="display: none;">
+				<div class="publiclass">
+		            </div>
+					<div class="pageList">
+						<ul>
+					
+						</ul>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+</body>
+
+</html>

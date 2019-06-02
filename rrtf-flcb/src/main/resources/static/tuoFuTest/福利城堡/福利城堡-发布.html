@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+		<meta charset="utf-8">
+		<title>用户中心-上传头像</title>
+		<link href="/tuoFuTest/c/base.css" rel="stylesheet" type="text/css">
+		<link href="/tuoFuTest/c/toefl.css" rel="stylesheet" type="text/css">
+		<link href="/tuoFuTest/c/bootstrap.min.css" rel="stylesheet" type="text/css">
+		<script src="/tuoFuTest/j/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/tuoFuTest/j/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="/tuoFuTest/福利城堡/js/castleCreate.js">
+		</script>
+	</head>
+	<script>
+		
+	</script>
+
+	<body>
+		<div class="doc910 ">
+			<div class="flcb_cardMenu">
+				<ul>
+					<li>
+						<a href="###" id="basic">基本信息</a>
+					</li>
+					<li>
+						<a href="###" id="desc">课程描述</a>
+					</li>
+					<li>
+						<a href="###" id="file">课程资料</a>
+					</li>
+				</ul>
+			</div>
+
+			<div class="userCenter" style="display: block;" id="basicContent"">
+				<form action="/add-basic.do" id="basicform">
+					<dl>
+						<dt>课程标题：</dt>
+						<dd><input type="text" class="userCenter_input" name="lessonTitle" value="java课" ></dd>
+					</dl>
+					<dl>
+						<dt>开始日期：</dt>
+						<dd><input type="date" class="userCenter_input" name="startDate" value="2019-12-12"></dd>
+					</dl>
+					<dl>
+						<dt>结束日期：</dt>
+						<dd><input type="date" class="userCenter_input" name="endDate" value="2019-12-12"></dd>
+					</dl>
+					<dl>
+						<dt>上课周期：</dt>
+						<dd>
+							<div class="userCenter_radio">
+								<input name="dayOfWeek" type="checkbox" value="周一"><span>周一</span>
+								<input name="dayOfWeek" type="checkbox" value="周二"><span>周二</span>
+								<input name="dayOfWeek" type="checkbox" value="周三"><span>周三</span>
+								<input name="dayOfWeek" type="checkbox" value="周四"><span>周四</span>
+								<input name="dayOfWeek" type="checkbox" value="周五"><span>周五</span>
+								<input name="dayOfWeek" type="checkbox" value="周六"><span>周六</span>
+								<input name="dayOfWeek" type="checkbox" value="周日"><span>周日</span>
+							</div>
+						</dd>
+					</dl>
+					
+					
+					<dl>
+						<dt>开始时间：</dt>
+						<dd><input type="time" class="userCenter_input" name="startTime" value="00:00"></dd>
+					</dl>
+					<dl>
+						<dt>结束时间：</dt>
+						<dd><input type="time" class="userCenter_input" name="endTime" value="00:00"></dd>
+					</dl>
+					
+					<dl>
+						<dt>适合学员：</dt>
+						<dd><input type="text" class="userCenter_input" name="studentType" value="java课"></dd>
+					</dl>
+					<dl>
+						<dt>课程费用：</dt>
+						<dd><input type="number" class="userCenter_input" name="lessonPrice" value="1000">&nbsp;rmb</dd>
+					</dl>
+					<dl>
+						<dt>活动分类：</dt>
+						<dd>
+							<div class="userCenter_radio">
+								<input name="activityType" type="radio" value="公益商城"><span>公益商城</span>
+								<input name="activityType" type="radio" value="特色商城"><span>特色商城</span>
+								<input name="activityType" type="radio" value="名师精品课商城"><span>名师精品课商城</span>
+							</div>
+						</dd>
+					</dl>
+					<dl>
+						<dt>课程分类：</dt>
+						<dd>
+							<select class="userCenter_input" name="lessonType">
+								<option>听力</option>
+								<option>口语</option>
+								<option>阅读</option>
+								<option>写作</option>
+								<option>词汇</option>
+							</select>
+							
+						</dd>
+					</dl>
+					
+					
+					
+					<dl>
+						<dt></dt>
+						<dd>
+							<a href="###" class="userCenter_save" onclick="document.getElementById('basicform').submit(), alert('保存成功')">保存</a>
+							<!-- <button type="submit">保存</button> -->
+						</dd>
+					</dl>
+				</form>
+			</div>
+
+			
+
+			<div class="userCenter" style="display: none;" id="descContent">
+				<form action="/add-desc.do" id="descform" enctype="multipart/form-data" method="post">
+					<dl>
+						<dt>课程讲师：</dt>
+						<dd>
+							<select class="userCenter_input" name="teacherId" id="teacherselect">
+								<option value="1" >alex</option>
+								<option value="2">jerry</option>
+								<option value="3">machale</option>
+							</select>
+							
+						</dd>
+					</dl>
+					<dl>
+						<dt>课程群：</dt>
+						<dd>
+							<select class="userCenter_input" id="groupselect" name="groupId">
+ 								<!-- <option value="${group.groupId}" th:text="${group.groupName}">java课程（1班）</option>
+								<option value="2">java课程（2班）</option>  -->
+								<option value="3">java课程（3班）</option>
+							</select>
+							
+						</dd>
+					</dl>
+					<dl>
+						<dt>宣传图：</dt>
+						<dd>
+							<input type="file" class="userCenter_input" name="lessonPictureFile">
+							
+						</dd>
+					</dl>
+					<dl>
+						<dt>课程大纲：</dt>
+						<dd><textarea cols="" rows="" class="userCenter_t" name="teachingOutline">最近土豪牛大了，昨晚说今天南北车还要板，今天果然又板！</textarea>
+							<p class="userCenter_text">请输入2-100个字符</p>
+						</dd>
+					</dl>
+					<dl>
+						<dt>上课方式：</dt>
+						<dd><textarea cols="" rows="" class="userCenter_t" name="teachingWay">每周都要在yy上面上课</textarea>
+							<p class="userCenter_text">请输入2-100个字符</p>
+						</dd>
+					</dl>
+					
+					<dl>
+						<dt></dt>
+						<dd>
+							<a href="###" class="userCenter_save" onclick="document.getElementById('descform').submit()">保存</a>
+						</dd>
+					</dl>
+				</form>
+			</div>
+
+			<div class="userTX" style="display: none;" id="fileContent">
+				<div class="flcb_cardDownload">
+		        	<h3 class="flcb_cardDownloadT">2015年1月精品课程下载</h3>
+		            <ul id="fileuploadul">
+		            	<!-- <li>
+		                    <span class="flcb_cardDownloadZl">资料1</span>
+		                    <span class="flcb_cardDownloadBt">2015年1月精品课听说读写下载</span>
+		                    <a href="###" class="flcb_cardDownloadXz">&nbsp;</a>
+		                </li>
+		                <li>
+		                    <span class="flcb_cardDownloadZl">资料1</span>
+		                    <span class="flcb_cardDownloadBt">2015年1月精品课听说读写下载</span>
+		                    <a href="###" class="flcb_cardDownloadXz">&nbsp;</a>
+		                </li>
+		                <li>
+		                    <span class="flcb_cardDownloadZl">资料1</span>
+		                    <span class="flcb_cardDownloadBt">2015年1月精品课听说读写下载</span>
+		                    <a href="###" class="flcb_cardDownloadXz">&nbsp;</a>
+		                </li> -->
+		            </ul>
+		            <div class="flcb_cardUpload">
+		            <a href="###" data-toggle="modal" data-target=".bs-example-modal-sm" >上传新资料</a>
+		            <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm">Small modal</button> -->
+
+						<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+						  <div class="modal-dialog modal-sm" role="document">
+						    <div class="modal-content">
+						    	<div><h3>&nbsp;&nbsp;&nbsp;&nbsp;上传资料</h3></div><hr>
+						    	<div>
+							    	<form action="/add-file.do" id="fileform" enctype="multipart/form-data" method="post">
+							    		<input type="file" class="userCenter_input" name="dataFile">
+							    		<hr>
+							    		<a href="###" class="userCenter_save" onclick="document.getElementById('fileform').submit()" id="fileuploada">保存</a>
+							    	</form>
+							    	<br>
+							    	<br>
+						    	</div>
+						    	
+						    </div>
+						  </div>
+						</div>
+		            	
+		            </div>
+		        </div>
+			</div>
+
+		</div>
+
+
+
+	</body>
+
+</html>
