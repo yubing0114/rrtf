@@ -47,7 +47,7 @@ download:
   location: static/myimage/
   
 server:
-  port: 8020
+  port: 8015
 eureka:
   client:
     serviceUrl:

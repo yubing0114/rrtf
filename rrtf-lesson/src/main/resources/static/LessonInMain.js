@@ -1,9 +1,10 @@
 $(function() {
 	var lessonDiv = $(".fn-right>div:nth-child(3)");
+	//console.log(lessonDiv.find(".index_itemRtitle>a"));
 	lessonDiv.find(".index_itemRtitle>a")[0].href="pubLesson/newLesson.html";
 	$.post("../pubLesson/show3Lessons",
 		function(data) {
-			console.log(data);
+			//console.log(data);
 			var dls = lessonDiv.find(".index_itemROpen>dl");
 			for (var i = 0; i < data.totalElements; i++) {
 				var d=data.content[i];
