@@ -70,7 +70,7 @@ public class UserController<V, K> {
 	
 	// 首页
 	@RequestMapping({ "/", "index" })
-	public String index(HttpSession session, HttpServletResponse response) {
+	public String index(HttpSession session, HttpServletResponse response,HttpServletRequest request) {
 		user = (User) SecurityUtils.getSubject().getPrincipal();
 		if (user != null) {
 			Cookie cookie = new Cookie("user", user.getUsername());
